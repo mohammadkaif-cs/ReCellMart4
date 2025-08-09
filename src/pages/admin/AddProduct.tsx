@@ -57,7 +57,7 @@ const AddProduct = () => {
       type: 'Phone', 
       faults: 'None', 
       warranty: 'No Warranty',
-      stock: 0,
+      stock: 1,
       media: { videoUrl: '' },
       specs: { processor: '', ram: '', storage: '', battery: '', display: '', os: '' }
     },
