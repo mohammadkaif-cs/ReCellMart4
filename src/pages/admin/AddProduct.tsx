@@ -13,7 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { db } from '@/firebase';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { Loader2, PlusCircle } from 'lucide-react';
+import { Loader2, PlusCircle, UploadCloud, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const productSchema = z.object({
@@ -29,7 +29,6 @@ const productSchema = z.object({
   verified: z.boolean().default(false),
   
   media: z.object({
-    imageUrls: z.string().min(1, 'At least one image URL is required.'),
     videoUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
   }),
 
@@ -47,6 +46,8 @@ type ProductFormValues = z.infer<typeof productSchema>;
 
 const AddProduct = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const navigate = useNavigate();
 
   const form = useForm<ProductFormValues>({
@@ -57,19 +58,55 @@ const AddProduct = () => {
       faults: 'None', 
       warranty: 'No Warranty',
       stock: 0,
-      media: { imageUrls: '', videoUrl: '' },
+      media: { videoUrl: '' },
       specs: { processor: '', ram: '', storage: '', battery: '', display: '', os: '' }
     },
   });
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      if (files.length + imageFiles.length > 6) {
+        toast.error("You can upload a maximum of 6 images.");
+        return;
+      }
+      setImageFiles(prev => [...prev, ...files]);
+      const newPreviews = files.map(file => URL.createObjectURL(file));
+      setImagePreviews(prev => [...prev, ...newPreviews]);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setImageFiles(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
+  };
 
   const onSubmit = async (data: ProductFormValues) => {
     setIsSubmitting(true);
     const mainToastId = toast.loading('Saving product...');
 
     try {
-      const imageUrls = data.media.imageUrls.split('\n').map(url => url.trim()).filter(url => url);
-      if (imageUrls.length === 0) {
-        toast.error('Please provide at least one valid image URL.', { id: mainToastId });
+      if (imageFiles.length === 0) {
+        toast.error('Please upload at least one image.', { id: mainToastId });
+        setIsSubmitting(false);
+        return;
+      }
+
+      const uploadPromises = imageFiles.map(file => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'recellmart_unsigned');
+        return fetch('https://api.cloudinary.com/v1_1/veriphone-d83b1/image/upload', {
+            method: 'POST',
+            body: formData,
+        }).then(response => response.json());
+      });
+
+      const uploadedImages = await Promise.all(uploadPromises);
+      const imageUrls = uploadedImages.map(result => result.secure_url);
+
+      if (imageUrls.some(url => !url)) {
+        toast.error('Some images failed to upload. Please try again.', { id: mainToastId });
         setIsSubmitting(false);
         return;
       }
@@ -97,6 +134,8 @@ const AddProduct = () => {
 
       toast.success('Product added successfully!', { id: mainToastId, duration: 4000 });
       form.reset();
+      setImageFiles([]);
+      setImagePreviews([]);
       navigate('/admin/products');
     } catch (error: any) {
       console.error('Error adding product:', error);
@@ -125,23 +164,57 @@ const AddProduct = () => {
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField control={form.control} name="specs.processor" render={({ field }) => (<FormItem><FormLabel>Processor</FormLabel><FormControl><Input placeholder="e.g., A16 Bionic" {...field} /></FormControl><FormMessage /></FormItem>)} />
                   <FormField control={form.control} name="specs.ram" render={({ field }) => (<FormItem><FormLabel>RAM</FormLabel><FormControl><Input placeholder="e.g., 6GB" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                  <FormField control={form.control} name="specs.storage" render={({ field }) => (<FormItem><FormLabel>Storage</FormLabel><FormControl><Input placeholder="e.g., 256GB" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                  <FormField control={form.control} name="specs.storage" render={({ field }) => (<FormItem><FormLabel>Storage</FormLabel><FormControl><Input placeholder="e.g., 256GB" {...field} /></FormControl><FormMessage /></FormMessage>)} />
                   <FormField control={form.control} name="specs.battery" render={({ field }) => (<FormItem><FormLabel>Battery</FormLabel><FormControl><Input placeholder="e.g., 98% Health" {...field} /></FormControl><FormMessage /></FormItem>)} />
                   <FormField control={form.control} name="specs.display" render={({ field }) => (<FormItem><FormLabel>Display</FormLabel><FormControl><Input placeholder="e.g., 6.1-inch OLED" {...field} /></FormControl><FormMessage /></FormItem>)} />
                   <FormField control={form.control} name="specs.os" render={({ field }) => (<FormItem><FormLabel>Operating System</FormLabel><FormControl><Input placeholder="e.g., iOS 17" {...field} /></FormControl><FormMessage /></FormItem>)} />
                 </CardContent>
               </Card>
               <Card className="bg-card border-border">
-                <CardHeader><CardTitle>Media URLs</CardTitle></CardHeader>
+                <CardHeader><CardTitle>Media</CardTitle></CardHeader>
                 <CardContent className="space-y-6">
-                  <FormField control={form.control} name="media.imageUrls" render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Image URLs</FormLabel>
-                      <FormControl><Textarea placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.png" {...field} rows={4} /></FormControl>
-                      <FormDescription>Paste one image URL per line.</FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )} />
+                  <FormItem>
+                    <FormLabel>Product Images (up to 6)</FormLabel>
+                    <FormControl>
+                      <div className="relative border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-primary transition-colors">
+                        <input
+                          id="image-upload"
+                          type="file"
+                          multiple
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          disabled={imageFiles.length >= 6}
+                        />
+                        <div className="flex flex-col items-center justify-center space-y-2 text-muted-foreground">
+                          <UploadCloud className="h-10 w-10" />
+                          <p>Drag & drop images here, or click to select files</p>
+                          <p className="text-xs">Max 6 images ({imageFiles.length}/6)</p>
+                        </div>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+
+                  {imagePreviews.length > 0 && (
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+                      {imagePreviews.map((preview, index) => (
+                        <div key={index} className="relative group aspect-square">
+                          <img src={preview} alt={`preview ${index}`} className="w-full h-full object-cover rounded-md" />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => removeImage(index)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
                   <FormField control={form.control} name="media.videoUrl" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Video URL (Optional)</FormLabel>

@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss";
 
-export default {
+const config: Config = {
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
@@ -62,6 +62,15 @@ export default {
         'soft': '0 4px 14px 0 rgba(0, 0, 0, 0.05)',
         'soft-lg': '0 10px 30px 0 rgba(0, 0, 0, 0.07)',
       },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in-up": "fade-in-up 0.4s ease-out forwards",
+        "blob-move": "blob-move 20s ease-in-out infinite",
+        "blob-move-reverse": "blob-move-reverse 20s ease-in-out infinite",
+        "stripes": "stripes 5s linear infinite",
+        "gradient-move": "gradient-move 10s ease infinite",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -72,28 +81,34 @@ export default {
           to: { height: "0" },
         },
         "fade-in-up": {
-          "0%": {
-            opacity: "0",
-            transform: "translateY(10px)",
-          },
-          "100%": {
-            opacity: "1",
-            transform: "translateY(0)",
-          },
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "blob-move": {
+          "0%": { transform: "translate(0px, 0px) scale(1)" },
+          "33%": { transform: "translate(30px, -50px) scale(1.1)" },
+          "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
+          "100%": { transform: "translate(0px, 0px) scale(1)" }
+        },
+        "blob-move-reverse": {
+          "0%": { transform: "translate(0px, 0px) scale(1)" },
+          "33%": { transform: "translate(-30px, 50px) scale(0.9)" },
+          "66%": { transform: "translate(20px, -20px) scale(1.1)" },
+          "100%": { transform: "translate(0px, 0px) scale(1)" }
+        },
+        "stripes": {
+          "0%": { backgroundPosition: "0 0" },
+          "100%": { backgroundPosition: "50px 50px" }
         },
         "gradient-move": {
           "0%": { backgroundPosition: "0% 50%" },
           "50%": { backgroundPosition: "100% 50%" },
-          "100%": { backgroundPosition: "0% 50%" },
-        },
-      },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in-up": "fade-in-up 0.4s ease-out forwards",
-        "gradient-move": "gradient-move 15s ease infinite",
-      },
-    },
+          "100%": { backgroundPosition: "0% 50%" }
+        }
+      }
+    }
   },
   plugins: [require("tailwindcss-animate")],
-} satisfies Config;
+};
+
+export default config;

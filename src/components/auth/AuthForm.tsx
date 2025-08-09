@@ -5,7 +5,8 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface AuthFormProps {
   isLogin: boolean;
@@ -53,53 +54,88 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, onToggle }) => {
   };
 
   return (
-    <div className="w-full">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground">{title}</h1>
-        <p className="text-muted-foreground mt-2">{description}</p>
-      </div>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {!isLogin && (
-          <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
-            <Input id="name" type="text" placeholder="John Doe" required value={name} onChange={(e) => setName(e.target.value)} className="h-12 text-base" />
-          </div>
-        )}
-        <div className="space-y-2">
-          <Label htmlFor="email">Email Address</Label>
-          <Input id="email" type="email" placeholder="you@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} className="h-12 text-base" />
+    <div className="w-full flex items-center justify-center p-6">
+      <div className="w-full max-w-[400px] bg-white rounded-xl shadow-md p-8">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
+          <p className="text-gray-500 mt-2">{description}</p>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
-          <div className="relative">
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {!isLogin && (
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-sm font-medium text-gray-700">Full Name</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Enter your full name"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 border-[1px]"
+              />
+            </div>
+          )}
+
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-sm font-medium text-gray-700">Email Address</Label>
             <Input
-              id="password"
-              type={showPassword ? 'text' : 'password'}
+              id="email"
+              type="email"
+              placeholder="Enter your email"
               required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="h-12 text-base pr-10"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-3 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 border-[1px]"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="password" className="text-sm font-medium text-gray-700">Password</Label>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-3 py-3 pr-10 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 border-[1px]"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+              >
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
+            </div>
+            {!isLogin && (
+              <p className="text-xs text-gray-500 mt-1 flex items-center">
+                <ShieldCheck className="w-3 h-3 mr-1" />
+                Password must be at least 6 characters
+              </p>
+            )}
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full py-3.5 bg-[#3b82f6] hover:bg-blue-700 text-white font-bold rounded-lg"
+            disabled={loading}
+          >
+            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : buttonText}
+          </Button>
+
+          <div className="text-center text-sm text-gray-500 mt-4">
+            {toggleText}{' '}
             <button
               type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground hover:text-primary"
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              onClick={onToggle}
+              className="font-medium text-blue-600 hover:text-blue-500"
             >
-              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              {toggleLinkText}
             </button>
           </div>
-          {!isLogin && <p className="text-xs text-muted-foreground">Password must be at least 6 characters.</p>}
-        </div>
-        <Button type="submit" className="w-full h-12 text-base font-semibold mt-4 transition-transform active:scale-[0.98]" disabled={loading}>
-          {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : buttonText}
-        </Button>
-      </form>
-      <div className="mt-6 text-center text-sm">
-        {toggleText}{' '}
-        <button onClick={onToggle} className="font-semibold text-primary hover:underline focus:outline-none">
-          {toggleLinkText}
-        </button>
+        </form>
       </div>
     </div>
   );
