@@ -95,8 +95,8 @@ const AddProduct = () => {
       const uploadPromises = imageFiles.map(file => {
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('upload_preset', 'recellmart');
-        return fetch('https://api.cloudinary.com/v1_1/veriphone-d83b1/image/upload', {
+        formData.append('upload_preset', 'recellmart_unsigned');
+        return fetch('https://api.cloudinary.com/v1_1/dp3b7jtgc/image/upload', {
             method: 'POST',
             body: formData,
         }).then(response => response.json());
@@ -232,7 +232,7 @@ const AddProduct = () => {
                   <FormField control={form.control} name="type" render={({ field }) => (<FormItem><FormLabel>Type</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger></FormControl><SelectContent><SelectItem value="Phone">Phone</SelectItem><SelectItem value="Laptop">Laptop</SelectItem></SelectContent></Select><FormMessage /></FormItem>)} />
                   <FormField control={form.control} name="brand" render={({ field }) => (<FormItem><FormLabel>Brand</FormLabel><FormControl><Input placeholder="e.g., Apple" {...field} /></FormControl><FormMessage /></FormItem>)} />
                   <FormField control={form.control} name="price" render={({ field }) => (<FormItem><FormLabel>Price (INR)</FormLabel><FormControl><Input type="number" placeholder="e.g., 89999" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                  <FormField control={form.control} name="stock" render={({ field }) => (<FormItem><FormLabel>Stock</FormLabel><FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                  <FormField control={form.control} name="stock" render={({ field }) => (<FormItem><FormLabel>Stock</FormLabel><FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl><FormMessage /></FormMessage>)} />
                   <FormField control={form.control} name="condition" render={({ field }) => (<FormItem><FormLabel>Condition</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select condition" /></SelectTrigger></FormControl><SelectContent><SelectItem value="New">New</SelectItem><SelectItem value="Good">Good</SelectItem><SelectItem value="Like New">Like New</SelectItem><SelectItem value="Faulty">Faulty</SelectItem></SelectContent></Select><FormMessage /></FormItem>)} />
                   <FormField control={form.control} name="warranty" render={({ field }) => (<FormItem><FormLabel>Warranty</FormLabel><FormControl><Input placeholder="e.g., 6 Months" {...field} /></FormControl><FormMessage /></FormItem>)} />
                   <FormField control={form.control} name="faults" render={({ field }) => (<FormItem><FormLabel>Faults</FormLabel><FormControl><Input placeholder="e.g., Minor scratch on back" {...field} /></FormControl><FormMessage /></FormItem>)} />
