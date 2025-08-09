@@ -22,7 +22,7 @@ const productSchema = z.object({
   condition: z.enum(['New', 'Good', 'Like New', 'Faulty'], { required_error: 'Please select a condition.' }),
   description: z.string().min(10, 'Description must be at least 10 characters.'),
   price: z.coerce.number().positive('Price must be a positive number.'),
-  stock: z.coerce.number().int().min(0, 'Stock cannot be negative.'),
+  stock: z.coerce.number().int().min(1, 'Stock must be at least 1.'),
   warranty: z.string().optional(),
   faults: z.string().optional(),
   type: z.enum(['Phone', 'Laptop'], { required_error: 'Please select a product type.' }),
@@ -163,7 +163,7 @@ const AddProduct = () => {
                 <CardHeader><CardTitle>Specifications</CardTitle></CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField control={form.control} name="specs.processor" render={({ field }) => (<FormItem><FormLabel>Processor</FormLabel><FormControl><Input placeholder="e.g., A16 Bionic" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                  <FormField control={form.control} name="specs.ram" render={({ field }) => (<FormItem><FormLabel>RAM</FormLabel><FormControl><Input placeholder="e.g., 6GB" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                  <FormField control={form.control} name="specs.ram" render={({ field }) => (<FormItem><FormLabel>RAM</FormLabel><FormControl><Input placeholder="e.g., 6GB" {...field} /></FormControl><FormMessage /></FormMessage>)} />
                   <FormField control={form.control} name="specs.storage" render={({ field }) => (<FormItem><FormLabel>Storage</FormLabel><FormControl><Input placeholder="e.g., 256GB" {...field} /></FormControl><FormMessage /></FormItem>)} />
                   <FormField control={form.control} name="specs.battery" render={({ field }) => (<FormItem><FormLabel>Battery</FormLabel><FormControl><Input placeholder="e.g., 98% Health" {...field} /></FormControl><FormMessage /></FormItem>)} />
                   <FormField control={form.control} name="specs.display" render={({ field }) => (<FormItem><FormLabel>Display</FormLabel><FormControl><Input placeholder="e.g., 6.1-inch OLED" {...field} /></FormControl><FormMessage /></FormItem>)} />
