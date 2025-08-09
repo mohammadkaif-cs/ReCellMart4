@@ -95,7 +95,7 @@ const AddProduct = () => {
       const uploadPromises = imageFiles.map(file => {
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('upload_preset', 'recellmart_unsigned');
+        formData.append('upload_preset', 'recellmart');
         return fetch('https://api.cloudinary.com/v1_1/veriphone-d83b1/image/upload', {
             method: 'POST',
             body: formData,
