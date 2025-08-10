@@ -122,6 +122,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, onToggle }) => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
                 className="w-full px-3 py-3 pr-10 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 border-[1px]"
               />
               <button
