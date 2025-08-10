@@ -3,7 +3,7 @@ import { motion, easeInOut } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Product } from '@/types/product';
-import { Cpu, HardDrive, BadgeCheck, Smartphone, ShoppingCart, Loader2 } from 'lucide-react';
+import { Cpu, HardDrive, BadgeCheck, Smartphone, ShoppingCart, Loader2, ShieldCheck, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/context/AuthContext';
@@ -83,16 +83,31 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
              {product.verified && (
               <Badge variant="outline" className="absolute top-3 right-3 bg-background/80 backdrop-blur-sm border-blue-500/50 text-blue-500">
                 <BadgeCheck className="h-4 w-4 mr-1" />
-                Verified
+                Verified by ReCellMart
               </Badge>
             )}
           </div>
-          <div className="p-4 space-y-3 flex-grow">
+          <div className="p-4 space-y-3 flex-grow flex flex-col">
             <h3 className="text-lg font-bold text-foreground truncate group-hover:text-primary transition-colors">{productTitle}</h3>
             <p className="text-2xl font-extrabold text-primary">₹{product.price.toLocaleString('en-IN')}</p>
-            <div className="flex items-center justify-between text-sm text-muted-foreground">
-              <span className="flex items-center gap-1"><Cpu size={16} /> {product.specs.ram}</span>
-              <span className="flex items-center gap-1"><HardDrive size={16} /> {product.specs.storage}</span>
+            
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-muted-foreground pt-3 mt-auto">
+                <div className="flex items-center gap-2" title={`Condition: ${product.condition}`}>
+                    <CheckCircle size={14} className="text-green-500 flex-shrink-0" />
+                    <span className="truncate">{product.condition}</span>
+                </div>
+                <div className="flex items-center gap-2" title={`Warranty: ${product.warranty}`}>
+                    <ShieldCheck size={14} className="text-blue-500 flex-shrink-0" />
+                    <span className="truncate">{product.warranty}</span>
+                </div>
+                <div className="flex items-center gap-2" title={`RAM: ${product.specs.ram}`}>
+                    <Cpu size={14} className="text-primary/80 flex-shrink-0" />
+                    <span className="truncate">{product.specs.ram}</span>
+                </div>
+                <div className="flex items-center gap-2" title={`Storage: ${product.specs.storage}`}>
+                    <HardDrive size={14} className="text-primary/80 flex-shrink-0" />
+                    <span className="truncate">{product.specs.storage}</span>
+                </div>
             </div>
           </div>
           <div className="p-4 pt-0">
