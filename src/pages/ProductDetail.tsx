@@ -7,7 +7,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Cpu, HardDrive, ShieldCheck, BatteryCharging, ScreenShare, AlertTriangle, CheckCircle, Truck, Loader2, ArrowLeft, Info, Smartphone, ShoppingCart } from 'lucide-react';
+import { Cpu, HardDrive, ShieldCheck, BatteryCharging, ScreenShare, AlertTriangle, CheckCircle, Truck, Loader2, ArrowLeft, Info, Smartphone, ShoppingCart, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { db } from '@/firebase';
@@ -203,6 +203,7 @@ const ProductDetail = () => {
             <div className="flex-grow" />
 
             <div className="bg-secondary p-3 rounded-md text-xs text-muted-foreground space-y-2">
+                <p className="flex items-start"><Zap size={20} className="mr-2 text-yellow-500 flex-shrink-0" /> Guaranteed 1-Day Delivery in supported areas.</p>
                 <p className="flex items-start"><Truck size={20} className="mr-2 text-primary/70 flex-shrink-0" /> Open Box Delivery in front of the user.</p>
                 <p className="flex items-start"><AlertTriangle size={20} className="mr-2 text-primary/70 flex-shrink-0" /> No returns after handover unless a major fault is found within 24 hours.</p>
             </div>

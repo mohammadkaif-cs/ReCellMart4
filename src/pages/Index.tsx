@@ -3,7 +3,7 @@ import { motion, easeInOut } from 'framer-motion';
 import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Loader2 } from 'lucide-react';
+import { ArrowRight, Loader2, Zap, BadgeCheck, ShieldCheck } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 const Index = () => {
@@ -64,7 +64,34 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Other sections can be added here using the new theme */}
+        {/* Features Section */}
+        <section className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: easeInOut, delay: 0.5 }}
+          >
+            <h2 className="text-3xl font-bold text-center text-foreground mb-2">Why ReCellMart?</h2>
+            <p className="text-center text-muted-foreground mb-12">Your satisfaction is our priority. Here's what we promise.</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="text-center p-6 bg-card border rounded-lg shadow-soft transition-all duration-300 hover:shadow-soft-lg hover:-translate-y-1">
+                <Zap className="h-10 w-10 mx-auto text-primary mb-4" />
+                <h3 className="text-xl font-semibold text-foreground mb-2">1-Day Delivery</h3>
+                <p className="text-muted-foreground">Lightning-fast delivery to get your device in your hands within 24 hours.</p>
+              </div>
+              <div className="text-center p-6 bg-card border rounded-lg shadow-soft transition-all duration-300 hover:shadow-soft-lg hover:-translate-y-1">
+                <BadgeCheck className="h-10 w-10 mx-auto text-primary mb-4" />
+                <h3 className="text-xl font-semibold text-foreground mb-2">Verified Devices</h3>
+                <p className="text-muted-foreground">Every product undergoes a rigorous quality check to ensure it meets our high standards.</p>
+              </div>
+              <div className="text-center p-6 bg-card border rounded-lg shadow-soft transition-all duration-300 hover:shadow-soft-lg hover:-translate-y-1">
+                <ShieldCheck className="h-10 w-10 mx-auto text-primary mb-4" />
+                <h3 className="text-xl font-semibold text-foreground mb-2">Assured Warranty</h3>
+                <p className="text-muted-foreground">Shop with confidence knowing your purchase is protected by our comprehensive warranty.</p>
+              </div>
+            </div>
+          </motion.div>
+        </section>
       </div>
     </Layout>
   );
