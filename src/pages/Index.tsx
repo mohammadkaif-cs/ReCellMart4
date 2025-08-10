@@ -30,11 +30,19 @@ const Index = () => {
           ></div>
            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
           <div className="relative container mx-auto px-4">
+            <motion.img
+              src="/recellmart_logo_hero.png"
+              alt="ReCellMart Logo"
+              className="mx-auto mb-8 h-24 md:h-32"
+              initial={{ opacity: 0, y: -30, scale: 0.8 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.7, ease: easeInOut, delay: 0.1 }}
+            />
             <motion.h1
               className="text-4xl md:text-6xl font-extrabold mb-6 text-foreground"
               initial={{ opacity: 0, y: -30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: easeInOut }}
+              transition={{ duration: 0.7, ease: easeInOut, delay: 0.2 }}
             >
               Mobile & Laptop Picks, Verified for You.
             </motion.h1>
