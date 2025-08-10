@@ -19,12 +19,16 @@ const ManageProducts = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+    const q = query(collection(db, 'products'));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const fetchedProducts = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
       })) as Product[];
+      
+      // Sort client-side to handle documents that might be missing the createdAt field
+      fetchedProducts.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      
       setProducts(fetchedProducts);
       setLoading(false);
     }, (error) => {
