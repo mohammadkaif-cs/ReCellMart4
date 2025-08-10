@@ -69,7 +69,7 @@ const ProfileDisplay: React.FC<ProfileDisplayProps> = ({ userProfile, currentUse
       </div>
 
       <div className="flex justify-center pt-4">
-        <Button onClick={onEdit} className="bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-glow-shadow transition-all duration-300">
+        <Button onClick={onEdit} className="bg-primary text-primary-foreground hover:bg-primary/90 glow-shadow hover-glow">
           <Edit className="mr-2 h-4 w-4" />
           Edit Profile
         </Button>

@@ -27,13 +27,13 @@ const Dashboard = () => {
         <h1 className="text-4xl font-extrabold text-primary">User Dashboard</h1>
         <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
           <TabsList className="grid w-full grid-cols-3 bg-card border border-primary/20 h-12">
-            <TabsTrigger value="orders" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-glow-shadow h-full">
+            <TabsTrigger value="orders" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:glow-shadow h-full">
               <ShoppingCart className="mr-2 h-5 w-5" /> My Orders
             </TabsTrigger>
-            <TabsTrigger value="profile" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-glow-shadow h-full">
+            <TabsTrigger value="profile" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:glow-shadow h-full">
               <User className="mr-2 h-5 w-5" /> My Profile
             </TabsTrigger>
-            <TabsTrigger value="support" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-glow-shadow h-full">
+            <TabsTrigger value="support" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:glow-shadow h-full">
               <LifeBuoy className="mr-2 h-5 w-5" /> Support Tickets
             </TabsTrigger>
           </TabsList>

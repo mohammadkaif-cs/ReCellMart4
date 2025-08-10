@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface AuthFormProps {
   isLogin: boolean;
@@ -21,8 +22,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, onToggle }) => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const title = isLogin ? 'Welcome Back' : 'Create Your Account';
-  const description = isLogin ? 'Sign in to continue to ReCellMart.' : 'Get started with your new account.';
+  const title = isLogin ? 'Welcome Back' : 'Create Account';
+  const description = isLogin ? 'Sign in to access your account.' : 'Get started with ReCellMart.';
   const buttonText = isLogin ? 'Sign In' : 'Create Account';
   const toggleText = isLogin ? "Don't have an account?" : 'Already have an account?';
   const toggleLinkText = isLogin ? 'Sign Up' : 'Sign In';
@@ -53,52 +54,89 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, onToggle }) => {
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground">{title}</h1>
-        <p className="text-muted-foreground mt-2">{description}</p>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-5">
-        {!isLogin && (
-          <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
-            <Input id="name" type="text" placeholder="Your Name" required value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
-        )}
-
-        <div className="space-y-2">
-          <Label htmlFor="email">Email Address</Label>
-          <Input id="email" type="email" placeholder="your@email.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
+    <div className="w-full flex items-center justify-center p-6">
+      <div className="w-full max-w-[400px] bg-white rounded-xl shadow-md p-8">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
+          <p className="text-gray-500 mt-2">{description}</p>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
-          <div className="relative">
-            <Input id="password" type={showPassword ? 'text' : 'password'} required value={password} onChange={(e) => setPassword(e.target.value)} />
-            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground">
-              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {!isLogin && (
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-sm font-medium text-gray-700">Full Name</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Enter your full name"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 border-[1px]"
+              />
+            </div>
+          )}
+
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-sm font-medium text-gray-700">Email Address</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-3 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 border-[1px]"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="password" className="text-sm font-medium text-gray-700">Password</Label>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-3 py-3 pr-10 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 border-[1px]"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+              >
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
+            </div>
+            {!isLogin && (
+              <p className="text-xs text-gray-500 mt-1 flex items-center">
+                <ShieldCheck className="w-3 h-3 mr-1" />
+                Password must be at least 6 characters
+              </p>
+            )}
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full py-3.5 bg-[#3b82f6] hover:bg-blue-700 text-white font-bold rounded-lg"
+            disabled={loading}
+          >
+            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : buttonText}
+          </Button>
+
+          <div className="text-center text-sm text-gray-500 mt-4">
+            {toggleText}{' '}
+            <button
+              type="button"
+              onClick={onToggle}
+              className="font-medium text-blue-600 hover:text-blue-500"
+            >
+              {toggleLinkText}
             </button>
           </div>
-          {!isLogin && (
-            <p className="text-xs text-muted-foreground mt-1 flex items-center">
-              <ShieldCheck className="w-3 h-3 mr-1 text-primary" />
-              Password must be at least 6 characters
-            </p>
-          )}
-        </div>
-
-        <Button type="submit" className="w-full py-3 bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-glow-shadow transition-all duration-300" disabled={loading}>
-          {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : buttonText}
-        </Button>
-
-        <div className="text-center text-sm text-muted-foreground pt-4">
-          {toggleText}{' '}
-          <button type="button" onClick={onToggle} className="font-medium text-primary hover:underline">
-            {toggleLinkText}
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };
