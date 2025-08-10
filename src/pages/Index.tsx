@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import HeroBackground from '@/components/hero/HeroBackground';
 
 const Index = () => {
   const { loading, loadingProfile } = useAuth();
@@ -24,20 +25,9 @@ const Index = () => {
       <div className="space-y-16 md:space-y-24">
         {/* Hero Section */}
         <section className="relative text-center min-h-[80vh] flex items-center justify-center rounded-lg overflow-hidden bg-card border border-border">
-          <div
-            className="absolute inset-0 bg-cover bg-center opacity-10"
-            style={{ backgroundImage: "url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2072&auto=format&fit=crop')" }}
-          ></div>
+          <HeroBackground />
            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
           <div className="relative container mx-auto px-4">
-            <motion.img
-              src="/recellmart_logo_hero.png"
-              alt="ReCellMart Logo"
-              className="mx-auto mb-8 h-24 md:h-32 invert dark:invert-0"
-              initial={{ opacity: 0, y: -30, scale: 0.8 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.7, ease: easeInOut, delay: 0.1 }}
-            />
             <motion.h1
               className="text-4xl md:text-6xl font-extrabold mb-6 text-foreground"
               initial={{ opacity: 0, y: -30 }}
