@@ -8,6 +8,7 @@ import {
   User,
   GoogleAuthProvider,
   signInWithPopup,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, collection, onSnapshot, deleteDoc, addDoc, serverTimestamp, writeBatch, Timestamp, runTransaction, query, where, orderBy } from 'firebase/firestore';
 import { toast } from 'sonner';
@@ -69,6 +70,7 @@ interface AuthContextType {
   placeOrder: () => Promise<void>;
   cancelOrder: (order: Order) => Promise<void>;
   createSupportTicket: (data: { type: 'Order Issue' | 'Technical Problem' | 'Payment' | 'General Inquiry'; subject: string; description: string; orderId?: string }) => Promise<void>;
+  sendPasswordReset: (email: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -406,10 +408,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const sendPasswordReset = async (email: string) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast.success("If an account with that email exists, a password reset link has been sent.");
+    } catch (error: any) {
+      if (error.code === 'auth/invalid-email') {
+        throw new Error(getAuthErrorMessage(error.code));
+      }
+      toast.success("If an account with that email exists, a password reset link has been sent.");
+    }
+  };
+
   const value = {
     currentUser, userRole, userProfile, isProfileComplete, loading, loadingProfile,
     cart, cartLoading, orders, ordersLoading, supportTickets, supportTicketsLoading,
     signup, login, signInWithGoogle, logout, refreshUserProfile, addToCart, removeFromCart, placeOrder, cancelOrder, createSupportTicket,
+    sendPasswordReset,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

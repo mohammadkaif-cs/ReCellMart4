@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -105,7 +105,16 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, onToggle }) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-sm font-medium text-gray-700">Password</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password" className="text-sm font-medium text-gray-700">Password</Label>
+              {isLogin && (
+                <div className="text-sm">
+                  <Link to="/forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
+                    Forgot Password?
+                  </Link>
+                </div>
+              )}
+            </div>
             <div className="relative">
               <Input
                 id="password"

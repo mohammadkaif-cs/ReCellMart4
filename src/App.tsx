@@ -24,6 +24,7 @@ import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 import ManageTickets from "./pages/admin/ManageTickets";
+import ForgotPassword from "./pages/ForgotPassword";
 
 const AdminRoutes = () => (
   <AdminRoute>
@@ -48,6 +49,14 @@ function App() {
         element={
           <AuthRoute>
             <Auth />
+          </AuthRoute>
+        }
+      />
+      <Route
+        path="/forgot-password"
+        element={
+          <AuthRoute>
+            <ForgotPassword />
           </AuthRoute>
         }
       />
