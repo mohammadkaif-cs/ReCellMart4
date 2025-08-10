@@ -33,7 +33,7 @@ const Index = () => {
             <motion.img
               src="/recellmart_logo_hero.png"
               alt="ReCellMart Logo"
-              className="mx-auto mb-8 h-24 md:h-32"
+              className="mx-auto mb-8 h-24 md:h-32 invert dark:invert-0"
               initial={{ opacity: 0, y: -30, scale: 0.8 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.7, ease: easeInOut, delay: 0.1 }}
