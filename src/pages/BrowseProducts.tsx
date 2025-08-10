@@ -9,7 +9,7 @@ import FilterPanel from '@/components/products/FilterPanel';
 import ProductCard from '@/components/products/ProductCard';
 import { Frown, Loader2 } from 'lucide-react';
 import { db } from '@/firebase';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { collection, onSnapshot, query } from 'firebase/firestore';
 import { toast } from 'sonner';
 
 const containerVariants = {
@@ -35,7 +35,7 @@ const BrowseProducts = () => {
 
   useEffect(() => {
     setLoading(true);
-    const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+    const q = query(collection(db, 'products'));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const fetchedProducts = querySnapshot.docs.map(doc => {
