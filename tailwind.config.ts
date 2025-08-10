@@ -61,6 +61,7 @@ const config: Config = {
       boxShadow: {
         'soft': '0 4px 14px 0 rgba(0, 0, 0, 0.05)',
         'soft-lg': '0 10px 30px 0 rgba(0, 0, 0, 0.07)',
+        'glow-shadow': '0 0 20px hsl(var(--primary) / 0.4)',
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",

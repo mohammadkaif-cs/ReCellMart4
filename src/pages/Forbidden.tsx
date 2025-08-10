@@ -40,7 +40,7 @@ const Forbidden: React.FC = () => {
           <Link to="/">
             <Button
               size="lg"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 glow-shadow hover-glow transition-all duration-300 text-lg px-8 py-6 rounded-full"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-glow-shadow transition-all duration-300 text-lg px-8 py-6 rounded-full"
             >
               Return to Home
             </Button>

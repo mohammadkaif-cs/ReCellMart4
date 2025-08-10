@@ -41,7 +41,7 @@ const CartPage: React.FC = () => {
             <h3 className="text-2xl font-semibold text-foreground">Your cart is empty</h3>
             <p className="text-muted-foreground mt-2 mb-6">Looks like you haven't added anything to your cart yet.</p>
             <Link to="/browse/mobiles">
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 glow-shadow hover-glow">
+              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-glow-shadow transition-all duration-300">
                 Start Shopping
               </Button>
             </Link>
@@ -75,7 +75,7 @@ const CartPage: React.FC = () => {
                     <span className="flex items-center"><IndianRupee className="h-5 w-5" />{subtotal.toLocaleString('en-IN')}</span>
                   </div>
                   <Link to="/checkout" className="w-full">
-                    <Button size="lg" className="w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90 glow-shadow hover-glow">
+                    <Button size="lg" className="w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-glow-shadow transition-all duration-300">
                       Proceed to Checkout
                     </Button>
                   </Link>

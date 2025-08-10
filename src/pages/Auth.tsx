@@ -19,46 +19,30 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex">
-      {/* Left Column - Gradient Background */}
-      <div className="hidden lg:flex w-1/2 min-h-screen bg-gradient-to-br from-[#1e3a8a] to-[#3b82f6] items-center justify-center p-8">
-        <div className="max-w-md text-center text-white">
-          <div className="mb-8">
-            <img
-              src="/recellmart_logo.png"
-              alt="ReCellMart Logo"
-              className="h-16 mx-auto mb-4"
-            />
-            <h2 className="text-2xl font-bold mb-2">Welcome to ReCellMart</h2>
-            <p className="opacity-80">Premium Refurbished Electronics Marketplace</p>
-          </div>
-          <div className="space-y-4 mt-12">
-            <button className="px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all">
-              Certified Quality Products
-            </button>
-            <button className="px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all">
-              Eco-Friendly Choice
-            </button>
-            <button className="px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all">
-              1-Year Warranty
-            </button>
-          </div>
+    <div className="relative min-h-screen w-full flex items-center justify-center p-4 overflow-hidden">
+      <AnimatedBackground />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="relative w-full max-w-4xl min-h-[600px] bg-card/60 backdrop-blur-lg border border-primary/20 rounded-2xl shadow-soft-lg flex"
+      >
+        <AuthVisual />
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-6">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={isLogin ? 'login' : 'signup'}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="w-full"
+            >
+              <AuthForm isLogin={isLogin} onToggle={handleToggle} />
+            </motion.div>
+          </AnimatePresence>
         </div>
-      </div>
-
-      {/* Right Column - Form */}
-      <div className="w-full lg:w-1/2 min-h-screen flex items-center justify-center p-6">
-        <motion.div
-          key={isLogin ? 'login' : 'signup'}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: 20 }}
-          transition={{ duration: 0.3, ease: 'easeInOut' }}
-          className="w-full max-w-md"
-        >
-          <AuthForm isLogin={isLogin} onToggle={handleToggle} />
-        </motion.div>
-      </div>
+      </motion.div>
     </div>
   );
 };

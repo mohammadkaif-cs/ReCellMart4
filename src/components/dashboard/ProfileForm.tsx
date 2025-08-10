@@ -108,8 +108,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onSave, onCancel, isCancellab
           {isCancellable && (
             <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>Cancel</Button>
           )}
-          <Button type="submit" disabled={isSubmitting} className="bg-primary text-primary-foreground hover:bg-primary/90 glow-shadow hover-glow">
-            <Save className="mr-2 h-4 w-4" />
+          <Button type="submit" disabled={isSubmitting} className="bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-glow-shadow transition-all duration-300">
+            {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
             Save Changes
           </Button>
         </div>
