@@ -6,6 +6,8 @@ import {
   signOut,
   onAuthStateChanged,
   User,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, collection, onSnapshot, deleteDoc, addDoc, serverTimestamp, writeBatch, Timestamp, runTransaction, query, where, orderBy } from 'firebase/firestore';
 import { toast } from 'sonner';
@@ -59,6 +61,7 @@ interface AuthContextType {
   supportTicketsLoading: boolean;
   signup: (email: string, password: string, name: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
   refreshUserProfile: () => Promise<void>;
   addToCart: (product: Product) => Promise<void>;
@@ -121,7 +124,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           pincode: '',
           profileCompleted: false,
           role: expectedRole,
-          avatarUrl: '',
+          avatarUrl: user.photoURL || '',
         };
         await setDoc(userDocRef, newProfile);
         setUserProfile(newProfile);
@@ -235,6 +238,42 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error: any) {
       throw new Error(getAuthErrorMessage(error.code || error.message));
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (!userDocSnap.exists()) {
+        const role = ADMIN_EMAILS.includes(user.email?.toLowerCase() || '') ? 'admin' : 'user';
+        const profileData: UserProfile = {
+          email: user.email!,
+          name: user.displayName || 'New User',
+          phone: user.phoneNumber || '',
+          city: '',
+          addressLine1: '',
+          addressLine2: '',
+          landmark: '',
+          pincode: '',
+          profileCompleted: false,
+          role: role,
+          avatarUrl: user.photoURL || '',
+        };
+        await setDoc(doc(db, 'users', user.uid), profileData);
+        toast.success('Welcome! Your account has been created.');
+      } else {
+        toast.success('Welcome back!');
+      }
+      navigate('/');
+    } catch (error: any) {
+      const errorMessage = getAuthErrorMessage(error.code);
+      toast.error(errorMessage);
+      throw new Error(errorMessage);
     }
   };
 
@@ -370,7 +409,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const value = {
     currentUser, userRole, userProfile, isProfileComplete, loading, loadingProfile,
     cart, cartLoading, orders, ordersLoading, supportTickets, supportTicketsLoading,
-    signup, login, logout, refreshUserProfile, addToCart, removeFromCart, placeOrder, cancelOrder, createSupportTicket,
+    signup, login, signInWithGoogle, logout, refreshUserProfile, addToCart, removeFromCart, placeOrder, cancelOrder, createSupportTicket,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

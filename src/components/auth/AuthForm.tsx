@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, Eye, EyeOff, ShieldCheck } from 'lucide-react';
-import { motion } from 'framer-motion';
+import GoogleIcon from './GoogleIcon';
 
 interface AuthFormProps {
   isLogin: boolean;
@@ -15,11 +15,12 @@ interface AuthFormProps {
 
 const AuthForm: React.FC<AuthFormProps> = ({ isLogin, onToggle }) => {
   const navigate = useNavigate();
-  const { signup, login } = useAuth();
+  const { signup, login, signInWithGoogle } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const title = isLogin ? 'Welcome Back' : 'Create Account';
@@ -50,6 +51,19 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, onToggle }) => {
       toast.error(error.message, { id: toastId });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    const toastId = toast.loading('Signing in with Google...');
+    try {
+      await signInWithGoogle();
+      toast.dismiss(toastId);
+    } catch (error: any) {
+      toast.dismiss(toastId);
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -120,9 +134,35 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, onToggle }) => {
           <Button
             type="submit"
             className="w-full py-3.5 bg-[#3b82f6] hover:bg-blue-700 text-white font-bold rounded-lg"
-            disabled={loading}
+            disabled={loading || googleLoading}
           >
             {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : buttonText}
+          </Button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white px-2 text-gray-500">Or continue with</span>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full py-3.5 border-gray-300 text-gray-700 font-semibold rounded-lg flex items-center justify-center"
+            onClick={handleGoogleSignIn}
+            disabled={loading || googleLoading}
+          >
+            {googleLoading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <>
+                <GoogleIcon />
+                Continue with Google
+              </>
+            )}
           </Button>
 
           <div className="text-center text-sm text-gray-500 mt-4">
