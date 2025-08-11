@@ -47,7 +47,7 @@ const TicketDetailSheet: React.FC<TicketDetailSheetProps> = ({ ticket, onClose }
         {ticket.orderId && (
           <p className="text-sm text-muted-foreground">
             Related Order: {' '}
-            <Link to={`/order/${ticket.orderId}`} className="text-primary hover:underline" onClick={onClose}>
+            <Link to={`/order/${ticket.orderId}`} className="text-primary" onClick={onClose}>
               #{ticket.orderId.slice(-12)}
             </Link>
           </p>
