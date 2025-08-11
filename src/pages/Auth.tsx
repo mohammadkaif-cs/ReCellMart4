@@ -40,7 +40,7 @@ const Auth = () => {
               Eco-Friendly Choice
             </button>
             <button className="px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all">
-              1 Day Delivery
+              1-Day Delivery
             </button>
           </div>
         </div>
