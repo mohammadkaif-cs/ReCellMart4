@@ -336,9 +336,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           if (!productDoc.exists() || productDoc.data().stock < cartItem.quantity) throw new Error(`Sorry, "${cartItem.productTitle}" is out of stock.`);
         }
         const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-        const orderData: Omit<Order, 'id'> = { userId: currentUser.uid, userPhone: userProfile.phone, deliveryAddress: { fullName: userProfile.name, street: userProfile.addressLine1, city: userProfile.city, pincode: userProfile.pincode }, items: cart, totalPrice, status: 'Ordered', orderDate: serverTimestamp() as Timestamp, paymentMethod: 'COD' };
+        const orderData: Omit<Order, 'id'> = { userId: currentUser.uid, userEmail: userProfile.email, userPhone: userProfile.phone, deliveryAddress: { fullName: userProfile.name, street: userProfile.addressLine1, city: userProfile.city, pincode: userProfile.pincode }, items: cart, totalPrice, status: 'Ordered', orderDate: serverTimestamp() as Timestamp, paymentMethod: 'COD' };
         const newOrderRef = doc(collection(db, 'orders'));
         transaction.set(newOrderRef, orderData);
+        
+        const mailRef = doc(collection(db, 'mail'));
+        transaction.set(mailRef, {
+          to: [userProfile.email],
+          replyTo: [userProfile.email],
+          message: {
+            subject: `ReCellMart Order Confirmation #${newOrderRef.id.slice(-6)}`,
+            html: `<h1>Thank you for your order!</h1><p>Hello ${userProfile.name},</p><p>We've received your order and it's now being processed. Your order ID is <strong>${newOrderRef.id}</strong>.</p><p>You can view your order details here: <a href="https://veriphone-d83b1.web.app/order/${newOrderRef.id}">View Order</a></p><p>Thanks for shopping with ReCellMart!</p>`,
+          },
+        });
+
         for (const { ref, doc: productDoc, cartItem } of productRefsAndData) {
           transaction.update(ref, { stock: productDoc.data().stock - cartItem.quantity });
         }
@@ -367,6 +378,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           if (productDoc.exists()) transaction.update(productRef, { stock: productDoc.data().stock + item.quantity });
         }
         transaction.update(orderRef, { status: 'Cancelled' });
+
+        if (order.userEmail) {
+          const mailRef = doc(collection(db, 'mail'));
+          transaction.set(mailRef, {
+            to: [order.userEmail],
+            replyTo: [order.userEmail],
+            message: {
+              subject: `Your ReCellMart Order #${order.id.slice(-6)} has been cancelled`,
+              html: `<h1>Order Cancelled</h1><p>Hello,</p><p>Your order with ID <strong>${order.id}</strong> has been successfully cancelled.</p><p>If you did not request this cancellation, please contact our support team immediately.</p><p>Thanks,</p><p>The ReCellMart Team</p>`,
+            },
+          });
+        }
       });
       toast.success("Order cancelled successfully.", { id: toastId });
     } catch (error: any) {
