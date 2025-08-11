@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Layout from '@/components/Layout';
@@ -37,7 +37,7 @@ const getYouTubeEmbedUrl = (url: string): string | null => {
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { addToCart } = useAuth();
+  const { addToCart, orders } = useAuth();
   
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -72,6 +72,16 @@ const ProductDetail = () => {
 
     return () => unsubscribe();
   }, [id]);
+
+  const relevantOrder = useMemo(() => {
+    if (!product) return null;
+    return orders.find(order => 
+        order.status !== 'Cancelled' && 
+        order.items.some(item => item.id === product.id)
+    );
+  }, [orders, product]);
+
+  const isOrdered = !!relevantOrder;
 
   const handleAddToCart = async () => {
     if (!product) return;
@@ -217,10 +227,21 @@ const ProductDetail = () => {
                 <p className="flex items-start"><AlertTriangle size={20} className="mr-2 text-primary/70 flex-shrink-0" /> No returns after handover unless a major fault is found within 24 hours.</p>
             </div>
 
-            <Button onClick={handleAddToCart} disabled={isAddingToCart} size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-soft hover:shadow-soft-lg transition-transform duration-300 hover:scale-105 text-lg py-6">
-              {isAddingToCart ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <ShoppingCart className="mr-2 h-5 w-5" />}
-              Add to Cart
-            </Button>
+            {isOrdered ? (
+              <Button
+                onClick={() => navigate(`/order/${relevantOrder!.id}`)}
+                size="lg"
+                className="w-full bg-green-600 text-white hover:bg-green-700 shadow-soft hover:shadow-soft-lg transition-transform duration-300 hover:scale-105 text-lg py-6"
+              >
+                <CheckCircle className="mr-2 h-5 w-5" />
+                View Your Order
+              </Button>
+            ) : (
+              <Button onClick={handleAddToCart} disabled={isAddingToCart || product.stock === 0} size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-soft hover:shadow-soft-lg transition-transform duration-300 hover:scale-105 text-lg py-6">
+                {isAddingToCart ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <ShoppingCart className="mr-2 h-5 w-5" />}
+                {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+              </Button>
+            )}
           </motion.div>
         </div>
 

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, easeInOut } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Product } from '@/types/product';
-import { Cpu, HardDrive, BadgeCheck, Smartphone, ShoppingCart, Loader2, BatteryCharging } from 'lucide-react';
+import { Cpu, HardDrive, BadgeCheck, Smartphone, ShoppingCart, Loader2, BatteryCharging, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/context/AuthContext';
@@ -20,9 +20,18 @@ const cardVariants = {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const navigate = useNavigate();
-  const { addToCart } = useAuth();
+  const { addToCart, orders } = useAuth();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const imageUrl = product.media?.images?.[0];
+
+  const relevantOrder = useMemo(() => {
+    return orders.find(order => 
+        order.status !== 'Cancelled' && 
+        order.items.some(item => item.id === product.id)
+    );
+  }, [orders, product.id]);
+
+  const isOrdered = !!relevantOrder;
 
   const handleCardClick = () => {
     navigate(`/product/${product.id}`);
@@ -124,21 +133,35 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </div>
           </div>
           <div className="p-4 pt-0">
-            <Button 
-              size="sm" 
-              onClick={handleAddToCart} 
-              disabled={isAddingToCart || product.stock === 0}
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-soft hover:shadow-soft-lg transition-transform duration-300 hover:scale-105"
-            >
-              {isAddingToCart ? (
-                <Loader2 size={16} className="animate-spin" />
-              ) : (
-                <>
-                  <ShoppingCart size={16} className="mr-2" />
-                  {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-                </>
-              )}
-            </Button>
+            {isOrdered ? (
+              <Button
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/order/${relevantOrder!.id}`);
+                }}
+                className="w-full bg-green-600 text-white hover:bg-green-700 shadow-soft"
+              >
+                <CheckCircle size={16} className="mr-2" />
+                View Order
+              </Button>
+            ) : (
+              <Button 
+                size="sm" 
+                onClick={handleAddToCart} 
+                disabled={isAddingToCart || product.stock === 0}
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-soft hover:shadow-soft-lg transition-transform duration-300 hover:scale-105"
+              >
+                {isAddingToCart ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : (
+                  <>
+                    <ShoppingCart size={16} className="mr-2" />
+                    {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                  </>
+                )}
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
