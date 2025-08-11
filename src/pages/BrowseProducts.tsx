@@ -7,7 +7,7 @@ import { phoneBrands, laptopBrands } from '@/data/filters';
 import { Product } from '@/types/product';
 import FilterPanel from '@/components/products/FilterPanel';
 import ProductCard from '@/components/products/ProductCard';
-import { Frown, Loader2 } from 'lucide-react';
+import { Frown, Loader2, Clock } from 'lucide-react';
 import { db } from '@/firebase';
 import { collection, onSnapshot, query } from 'firebase/firestore';
 import { toast } from 'sonner';
@@ -111,6 +111,8 @@ const BrowseProducts = () => {
     );
   }
 
+  const isLaptops = category === 'laptops';
+
   return (
     <Layout>
       <motion.div
@@ -152,6 +154,16 @@ const BrowseProducts = () => {
                 {filteredProducts.map(product => (
                   <ProductCard key={product.id} product={product} />
                 ))}
+              </motion.div>
+            ) : isLaptops ? (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col items-center justify-center h-full min-h-[40vh] bg-card rounded-lg border-2 border-dashed border-border p-8"
+              >
+                <Clock className="w-16 h-16 text-muted-foreground mb-4" />
+                <h3 className="text-2xl font-semibold text-foreground">Coming Soon!</h3>
+                <p className="text-muted-foreground mt-2">Laptops will be available shortly. Stay tuned!</p>
               </motion.div>
             ) : (
               <motion.div
