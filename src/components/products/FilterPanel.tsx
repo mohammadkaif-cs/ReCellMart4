@@ -57,28 +57,30 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           
           <div>
             <Label className="font-semibold text-foreground text-sm">Price Range</Label>
-            <div className="flex items-center gap-2 mt-1">
-              <div className="relative w-full">
-                <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Min"
-                  type="number"
-                  value={priceRange.min}
-                  onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
-                  className="pl-9"
-                />
+            {priceRange && (
+              <div className="flex items-center gap-2 mt-1">
+                <div className="relative w-full">
+                  <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Min"
+                    type="number"
+                    value={priceRange.min}
+                    onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
+                    className="pl-9"
+                  />
+                </div>
+                <div className="relative w-full">
+                  <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Max"
+                    type="number"
+                    value={priceRange.max}
+                    onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
+                    className="pl-9"
+                  />
+                </div>
               </div>
-              <div className="relative w-full">
-                <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Max"
-                  type="number"
-                  value={priceRange.max}
-                  onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
-                  className="pl-9"
-                />
-              </div>
-            </div>
+            )}
           </div>
           
           <Separator className="bg-primary/10" />
