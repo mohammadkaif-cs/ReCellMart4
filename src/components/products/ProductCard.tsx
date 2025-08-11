@@ -99,7 +99,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             )}
             {product.stock === 0 && (
               <Badge variant="destructive" className="absolute top-3 left-3 bg-destructive/90 text-destructive-foreground backdrop-blur-sm">
-                Out of Stock
+                Sold
               </Badge>
             )}
              {product.verified && (
@@ -157,7 +157,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 ) : (
                   <>
                     <ShoppingCart size={16} className="mr-2" />
-                    {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                    {product.stock === 0 ? 'Sold' : 'Add to Cart'}
                   </>
                 )}
               </Button>

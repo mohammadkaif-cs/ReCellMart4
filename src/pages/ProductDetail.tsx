@@ -239,7 +239,7 @@ const ProductDetail = () => {
             ) : (
               <Button onClick={handleAddToCart} disabled={isAddingToCart || product.stock === 0} size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-soft hover:shadow-soft-lg transition-transform duration-300 hover:scale-105 text-lg py-6">
                 {isAddingToCart ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <ShoppingCart className="mr-2 h-5 w-5" />}
-                {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                {product.stock === 0 ? 'Sold' : 'Add to Cart'}
               </Button>
             )}
           </motion.div>
