@@ -20,7 +20,7 @@ const cardVariants = {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const navigate = useNavigate();
-  const { currentUser, isProfileComplete, addToCart } = useAuth();
+  const { addToCart } = useAuth();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const imageUrl = product.media?.images?.[0];
 
@@ -29,25 +29,30 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   const handleAddToCart = async (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent navigation to product detail page
-
-    if (!currentUser) {
-      toast.error('Please log in to add items to your cart.', {
-        action: { label: 'Login', onClick: () => navigate('/login') },
-      });
-      return;
-    }
-
-    if (isProfileComplete === false) {
-      toast.error('Please complete your profile before adding to cart.', {
-        action: { label: 'Go to Profile', onClick: () => navigate('/dashboard?tab=profile') },
-      });
-      return;
-    }
-    
+    e.stopPropagation();
     setIsAddingToCart(true);
-    await addToCart(product);
-    setIsAddingToCart(false);
+    const toastId = toast.loading("Adding to cart...");
+
+    try {
+      await addToCart(product);
+      toast.success("Product added! Redirecting to cart...", {
+        id: toastId,
+        duration: 1500,
+      });
+      setTimeout(() => navigate('/cart'), 1000);
+    } catch (error: any) {
+      let action;
+      if (error.message.includes('log in')) {
+        action = { label: 'Login', onClick: () => navigate('/login') };
+      } else if (error.message.includes('profile')) {
+        action = { label: 'Go to Profile', onClick: () => navigate('/dashboard?tab=profile') };
+      } else if (error.message.includes('already in your cart')) {
+        action = { label: 'View Cart', onClick: () => navigate('/cart') };
+      }
+      
+      toast.error(error.message, { id: toastId, action });
+      setIsAddingToCart(false);
+    }
   };
 
   const productTitle = product.model.toLowerCase().startsWith(product.brand.toLowerCase())

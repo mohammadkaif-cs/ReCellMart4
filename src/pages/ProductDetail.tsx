@@ -37,7 +37,7 @@ const getYouTubeEmbedUrl = (url: string): string | null => {
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { currentUser, isProfileComplete, addToCart } = useAuth();
+  const { addToCart } = useAuth();
   
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -74,25 +74,31 @@ const ProductDetail = () => {
   }, [id]);
 
   const handleAddToCart = async () => {
-    if (!currentUser) {
-      toast.error('Please log in to add items to your cart.', {
-        action: { label: 'Login', onClick: () => navigate('/login') },
-      });
-      return;
-    }
-
-    if (isProfileComplete === false) {
-      toast.error('Please complete your profile before adding to cart.', {
-        action: { label: 'Go to Profile', onClick: () => navigate('/dashboard?tab=profile') },
-      });
-      return;
-    }
-    
     if (!product) return;
 
     setIsAddingToCart(true);
-    await addToCart(product);
-    setIsAddingToCart(false);
+    const toastId = toast.loading("Adding to cart...");
+
+    try {
+      await addToCart(product);
+      toast.success("Product added! Redirecting to cart...", {
+        id: toastId,
+        duration: 1500,
+      });
+      setTimeout(() => navigate('/cart'), 1000);
+    } catch (error: any) {
+      let action;
+      if (error.message.includes('log in')) {
+        action = { label: 'Login', onClick: () => navigate('/login') };
+      } else if (error.message.includes('profile')) {
+        action = { label: 'Go to Profile', onClick: () => navigate('/dashboard?tab=profile') };
+      } else if (error.message.includes('already in your cart')) {
+        action = { label: 'View Cart', onClick: () => navigate('/cart') };
+      }
+      
+      toast.error(error.message, { id: toastId, action });
+      setIsAddingToCart(false);
+    }
   };
 
   if (loading) {

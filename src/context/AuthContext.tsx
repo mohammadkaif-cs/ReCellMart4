@@ -292,25 +292,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const addToCart = async (product: Product) => {
     if (!currentUser) {
-      toast.error('Please log in to add items to your cart.');
-      return;
+      throw new Error('Please log in to add items to your cart.');
+    }
+    if (isProfileComplete === false) {
+      throw new Error('Please complete your profile before adding to cart.');
     }
     const cartItemRef = doc(db, 'users', currentUser.uid, 'cart', product.id);
-    const toastId = toast.loading("Adding to cart...");
-    try {
-      const docSnap = await getDoc(cartItemRef);
-      if (docSnap.exists()) {
-        toast.info('This item is already in your cart.', { id: toastId });
-      } else {
-        const productTitle = product.model.toLowerCase().startsWith(product.brand.toLowerCase()) ? product.model : `${product.brand} ${product.model}`;
-        const newCartItem: Omit<CartItem, 'id'> = { productTitle, price: product.price, image: product.media.images[0] || '', quantity: 1 };
-        await setDoc(cartItemRef, newCartItem);
-        toast.success('Product added to cart!', { id: toastId });
-      }
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-      toast.error('Failed to add item to cart.', { id: toastId });
+    const docSnap = await getDoc(cartItemRef);
+    if (docSnap.exists()) {
+      throw new Error('This item is already in your cart.');
     }
+    const productTitle = product.model.toLowerCase().startsWith(product.brand.toLowerCase()) ? product.model : `${product.brand} ${product.model}`;
+    const newCartItem: Omit<CartItem, 'id'> = { productTitle, price: product.price, image: product.media.images[0] || '', quantity: 1 };
+    await setDoc(cartItemRef, newCartItem);
   };
 
   const removeFromCart = async (itemId: string) => {
