@@ -1,2 +1,2 @@
-export const phoneBrands = ['Apple', 'Google', 'Motorola', 'Nokia', 'Nothing', 'OnePlus', 'Oppo', 'Poco', 'Realme', 'Redmi', 'Samsung', 'Sony', 'Vivo', 'Xiaomi'];
+export const phoneBrands = ['Apple', 'Google', 'Infinix', 'Motorola', 'Nothing', 'OnePlus', 'Oppo', 'Poco', 'Realme', 'Redmi', 'Samsung', 'Vivo', 'Xiaomi'];
 export const laptopBrands = ['Acer', 'Apple', 'Asus', 'Avita', 'Dell', 'HP', 'Lenovo', 'LG', 'Microsoft', 'MSI', 'Razer', 'Samsung'];
