@@ -22,7 +22,7 @@ const OrderSuccessPage: React.FC = () => {
         
         <div className="bg-secondary/50 border border-dashed border-primary/20 rounded-lg px-6 py-3 my-6">
           <p className="text-muted-foreground">
-            Your Order ID is: <span className="font-bold text-primary tracking-wider">{orderId}</span>
+            Order ID: <span className="font-bold text-primary tracking-wider">{orderId}</span>
           </p>
         </div>
 
