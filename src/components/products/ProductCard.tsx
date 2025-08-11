@@ -128,7 +128,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               size="sm" 
               onClick={handleAddToCart} 
               disabled={isAddingToCart || product.stock === 0}
-              className="w-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 disabled:bg-secondary disabled:text-muted-foreground disabled:cursor-not-allowed"
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-soft hover:shadow-soft-lg transition-transform duration-300 hover:scale-105"
             >
               {isAddingToCart ? (
                 <Loader2 size={16} className="animate-spin" />
