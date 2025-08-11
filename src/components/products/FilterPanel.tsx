@@ -11,8 +11,8 @@ import { Search, IndianRupee } from 'lucide-react';
 interface FilterPanelProps {
   searchTerm: string;
   setSearchTerm: (value: string) => void;
-  priceRange: { min: string; max: string };
-  setPriceRange: (value: { min: string; max: string }) => void;
+  priceFilter: string;
+  setPriceFilter: (value: string) => void;
   brandFilter: string;
   setBrandFilter: (value: string) => void;
   brandOptions: string[];
@@ -22,8 +22,8 @@ interface FilterPanelProps {
 const FilterPanel: React.FC<FilterPanelProps> = ({
   searchTerm,
   setSearchTerm,
-  priceRange,
-  setPriceRange,
+  priceFilter,
+  setPriceFilter,
   brandFilter,
   setBrandFilter,
   brandOptions,
@@ -56,31 +56,18 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           <Separator className="bg-primary/10" />
           
           <div>
-            <Label className="font-semibold text-foreground text-sm">Price Range</Label>
-            {priceRange && (
-              <div className="flex items-center gap-2 mt-1">
-                <div className="relative w-full">
-                  <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Min"
-                    type="number"
-                    value={priceRange.min}
-                    onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
-                    className="pl-9"
-                  />
-                </div>
-                <div className="relative w-full">
-                  <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Max"
-                    type="number"
-                    value={priceRange.max}
-                    onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
-                    className="pl-9"
-                  />
-                </div>
-              </div>
-            )}
+            <Label htmlFor="price-filter" className="font-semibold text-foreground text-sm">Price Under</Label>
+            <div className="relative mt-1">
+              <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="price-filter"
+                placeholder="e.g., 25000"
+                type="number"
+                value={priceFilter}
+                onChange={(e) => setPriceFilter(e.target.value)}
+                className="pl-9"
+              />
+            </div>
           </div>
           
           <Separator className="bg-primary/10" />

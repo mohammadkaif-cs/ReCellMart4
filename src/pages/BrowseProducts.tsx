@@ -31,7 +31,7 @@ const BrowseProducts = () => {
   const [error, setError] = useState<string | null>(null);
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [priceRange, setPriceRange] = useState({ min: '', max: '' });
+  const [priceFilter, setPriceFilter] = useState('');
   const [brandFilter, setBrandFilter] = useState('all');
 
   useEffect(() => {
@@ -70,19 +70,18 @@ const BrowseProducts = () => {
         p.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.brand.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const minPrice = priceRange.min ? parseFloat(priceRange.min) : 0;
-      const maxPrice = priceRange.max ? parseFloat(priceRange.max) : Infinity;
-      const priceMatch = p.price >= minPrice && p.price <= maxPrice;
+      const maxPrice = priceFilter ? parseFloat(priceFilter) : Infinity;
+      const priceMatch = p.price <= maxPrice;
 
       const brandMatch = brandFilter === 'all' || p.brand === brandFilter;
 
       return categoryMatch && searchMatch && priceMatch && brandMatch;
     });
-  }, [allProducts, currentCategory, searchTerm, priceRange, brandFilter]);
+  }, [allProducts, currentCategory, searchTerm, priceFilter, brandFilter]);
 
   const resetFilters = () => {
     setSearchTerm('');
-    setPriceRange({ min: '', max: '' });
+    setPriceFilter('');
     setBrandFilter('all');
   };
 
@@ -134,8 +133,8 @@ const BrowseProducts = () => {
             <FilterPanel
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
-              priceRange={priceRange}
-              setPriceRange={setPriceRange}
+              priceFilter={priceFilter}
+              setPriceFilter={setPriceFilter}
               brandFilter={brandFilter}
               setBrandFilter={setBrandFilter}
               brandOptions={brandOptions}
