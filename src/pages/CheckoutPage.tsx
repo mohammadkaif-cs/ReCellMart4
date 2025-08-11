@@ -76,7 +76,16 @@ const CheckoutPage: React.FC = () => {
                     <span className="font-medium text-foreground">₹{item.price.toLocaleString('en-IN')}</span>
                   </div>
                 ))}
-                <div className="border-t my-2 pt-2">
+                <div className="border-t my-2 pt-2 space-y-2">
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>Subtotal</span>
+                    <span>₹{subtotal.toLocaleString('en-IN')}</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>Delivery</span>
+                    <span className="text-green-500 font-medium">FREE</span>
+                  </div>
+                  <div className="border-t my-2"></div>
                   <div className="flex justify-between font-semibold text-lg">
                     <span>Total</span>
                     <span className="flex items-center"><IndianRupee className="h-5 w-5" />{subtotal.toLocaleString('en-IN')}</span>
