@@ -30,8 +30,9 @@ const BrowseProducts = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [priceRange, setPriceRange] = useState<[number, number]>([1000, 80000]);
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [priceFilter, setPriceFilter] = useState('all');
+  const [brandFilter, setBrandFilter] = useState('all');
 
   useEffect(() => {
     setLoading(true);
@@ -64,16 +65,29 @@ const BrowseProducts = () => {
   const filteredProducts = useMemo(() => {
     return allProducts.filter(p => {
       const categoryMatch = p.type === currentCategory;
-      const priceMatch = p.price >= priceRange[0] && p.price <= priceRange[1];
-      const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(p.brand);
-      const stockMatch = p.stock > 0;
-      return categoryMatch && priceMatch && brandMatch && stockMatch;
+
+      const searchMatch = searchTerm === '' ||
+        p.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.brand.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const [minPrice, maxPrice] = priceFilter.split('-').map(Number);
+      const priceMatch = priceFilter === 'all' || (p.price >= minPrice && p.price <= maxPrice);
+
+      const brandMatch = brandFilter === 'all' || p.brand === brandFilter;
+
+      return categoryMatch && searchMatch && priceMatch && brandMatch;
     });
-  }, [allProducts, currentCategory, priceRange, selectedBrands]);
+  }, [allProducts, currentCategory, searchTerm, priceFilter, brandFilter]);
+
+  const resetFilters = () => {
+    setSearchTerm('');
+    setPriceFilter('all');
+    setBrandFilter('all');
+  };
 
   const handleTabChange = (value: string) => {
     navigate(`/browse/${value}`);
-    setSelectedBrands([]);
+    resetFilters();
   };
 
   if (loading) {
@@ -117,11 +131,14 @@ const BrowseProducts = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-1">
             <FilterPanel
-              priceRange={priceRange}
-              setPriceRange={setPriceRange}
-              selectedBrands={selectedBrands}
-              setSelectedBrands={setSelectedBrands}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              priceFilter={priceFilter}
+              setPriceFilter={setPriceFilter}
+              brandFilter={brandFilter}
+              setBrandFilter={setBrandFilter}
               brandOptions={brandOptions}
+              resetFilters={resetFilters}
             />
           </div>
           <div className="lg:col-span-3">

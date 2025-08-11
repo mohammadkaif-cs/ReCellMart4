@@ -80,6 +80,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             ) : (
               <Smartphone className="h-24 w-24 text-muted-foreground" />
             )}
+            {product.stock === 0 && (
+              <Badge variant="destructive" className="absolute top-3 left-3 bg-destructive/90 text-destructive-foreground backdrop-blur-sm">
+                Out of Stock
+              </Badge>
+            )}
              {product.verified && (
               <Badge variant="outline" className="absolute top-3 right-3 bg-background/80 backdrop-blur-sm border-blue-500/50 text-blue-500">
                 <BadgeCheck className="h-4 w-4 mr-1" />
@@ -114,15 +119,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <Button 
               size="sm" 
               onClick={handleAddToCart} 
-              disabled={isAddingToCart}
-              className="w-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+              disabled={isAddingToCart || product.stock === 0}
+              className="w-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 disabled:bg-secondary disabled:text-muted-foreground disabled:cursor-not-allowed"
             >
               {isAddingToCart ? (
                 <Loader2 size={16} className="animate-spin" />
               ) : (
                 <>
                   <ShoppingCart size={16} className="mr-2" />
-                  Add to Cart
+                  {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
                 </>
               )}
             </Button>
