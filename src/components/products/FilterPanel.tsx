@@ -6,32 +6,24 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Search, X } from 'lucide-react';
+import { Search, IndianRupee } from 'lucide-react';
 
 interface FilterPanelProps {
   searchTerm: string;
   setSearchTerm: (value: string) => void;
-  priceFilter: string;
-  setPriceFilter: (value: string) => void;
+  priceRange: { min: string; max: string };
+  setPriceRange: (value: { min: string; max: string }) => void;
   brandFilter: string;
   setBrandFilter: (value: string) => void;
   brandOptions: string[];
   resetFilters: () => void;
 }
 
-const priceOptions = [
-  { label: 'Any Price', value: 'all' },
-  { label: 'Under ₹15,000', value: '0-15000' },
-  { label: '₹15,000 - ₹30,000', value: '15000-30000' },
-  { label: '₹30,000 - ₹50,000', value: '30000-50000' },
-  { label: 'Over ₹50,000', value: '50000-1000000' },
-];
-
 const FilterPanel: React.FC<FilterPanelProps> = ({
   searchTerm,
   setSearchTerm,
-  priceFilter,
-  setPriceFilter,
+  priceRange,
+  setPriceRange,
   brandFilter,
   setBrandFilter,
   brandOptions,
@@ -40,13 +32,16 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   return (
     <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
       <Card className="bg-card border-primary/20 sticky top-20">
-        <CardHeader>
-          <CardTitle className="text-primary text-2xl">Filters</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between pb-4">
+          <CardTitle className="text-primary text-xl">Filters</CardTitle>
+          <Button variant="link" onClick={resetFilters} className="p-0 h-auto text-sm text-muted-foreground hover:text-primary">
+            Clear All
+          </Button>
         </CardHeader>
         <CardContent className="space-y-6">
           <div>
-            <Label htmlFor="search-filter" className="font-semibold text-foreground">Search</Label>
-            <div className="relative">
+            <Label htmlFor="search-filter" className="font-semibold text-foreground text-sm">Search by Model</Label>
+            <div className="relative mt-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 id="search-filter"
@@ -57,27 +52,41 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               />
             </div>
           </div>
-          <Separator className="bg-primary/20" />
+          
+          <Separator className="bg-primary/10" />
+          
           <div>
-            <Label htmlFor="price-filter" className="font-semibold text-foreground">Price Range</Label>
-            <Select value={priceFilter} onValueChange={setPriceFilter}>
-              <SelectTrigger id="price-filter">
-                <SelectValue placeholder="Select a price range" />
-              </SelectTrigger>
-              <SelectContent>
-                {priceOptions.map(option => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label className="font-semibold text-foreground text-sm">Price Range</Label>
+            <div className="flex items-center gap-2 mt-1">
+              <div className="relative w-full">
+                <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Min"
+                  type="number"
+                  value={priceRange.min}
+                  onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
+                  className="pl-9"
+                />
+              </div>
+              <div className="relative w-full">
+                <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Max"
+                  type="number"
+                  value={priceRange.max}
+                  onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
+                  className="pl-9"
+                />
+              </div>
+            </div>
           </div>
-          <Separator className="bg-primary/20" />
+          
+          <Separator className="bg-primary/10" />
+          
           <div>
-            <Label htmlFor="brand-filter" className="font-semibold text-foreground">Brand</Label>
+            <Label htmlFor="brand-filter" className="font-semibold text-foreground text-sm">Brand</Label>
             <Select value={brandFilter} onValueChange={setBrandFilter}>
-              <SelectTrigger id="brand-filter">
+              <SelectTrigger id="brand-filter" className="mt-1">
                 <SelectValue placeholder="Select a brand" />
               </SelectTrigger>
               <SelectContent>
@@ -90,10 +99,6 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               </SelectContent>
             </Select>
           </div>
-          <Button variant="outline" onClick={resetFilters} className="w-full">
-            <X className="mr-2 h-4 w-4" />
-            Reset Filters
-          </Button>
         </CardContent>
       </Card>
     </motion.div>
