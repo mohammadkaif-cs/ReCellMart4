@@ -4,7 +4,6 @@ import { CartItem } from './cart';
 export interface Order {
   id: string;
   userId: string;
-  userEmail: string;
   userPhone: string;
   deliveryAddress: {
     fullName: string;
