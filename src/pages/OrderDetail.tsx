@@ -94,10 +94,13 @@ const OrderDetail = () => {
                 <Package className="h-5 w-5 text-primary" />
                 Order Items
               </h3>
-              <ul className="space-y-2">
+              <ul className="space-y-4">
                 {order.items.map(item => (
-                  <li key={item.id} className="flex justify-between items-center text-sm">
-                    <span className="text-muted-foreground">{item.productTitle}</span>
+                  <li key={item.id} className="flex items-center gap-4 text-sm">
+                    <img src={item.image} alt={item.productTitle} className="w-16 h-16 object-cover rounded-md border" />
+                    <div className="flex-grow">
+                      <p className="text-muted-foreground">{item.productTitle}</p>
+                    </div>
                     <span className="font-medium text-foreground">₹{item.price.toLocaleString('en-IN')}</span>
                   </li>
                 ))}
