@@ -62,34 +62,13 @@ function App() {
       />
       
       {/* Other Public Routes */}
+      <Route path="/" element={<Index />} />
+      <Route path="/browse/:category" element={<BrowseProducts />} />
+      <Route path="/product/:id" element={<ProductDetail />} />
       <Route path="/not-available" element={<NotAvailable />} />
       <Route path="/forbidden" element={<Forbidden />} />
 
       {/* Protected Routes */}
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <Index />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/browse/:category"
-        element={
-          <ProtectedRoute>
-            <BrowseProducts />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/product/:id"
-        element={
-          <ProtectedRoute>
-            <ProductDetail />
-          </ProtectedRoute>
-        }
-      />
       <Route
         path="/my-orders"
         element={
