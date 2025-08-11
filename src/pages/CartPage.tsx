@@ -48,7 +48,14 @@ const CartPage: React.FC = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-1 lg:order-last">
+            <div className="lg:col-span-2 space-y-4">
+              <AnimatePresence>
+                {cart.map(item => (
+                  <CartItemCard key={item.id} item={item} />
+                ))}
+              </AnimatePresence>
+            </div>
+            <div className="lg:col-span-1">
               <Card className="sticky top-24 bg-card border-primary/20">
                 <CardHeader>
                   <CardTitle>Order Summary</CardTitle>
@@ -74,13 +81,6 @@ const CartPage: React.FC = () => {
                   </Link>
                 </CardContent>
               </Card>
-            </div>
-            <div className="lg:col-span-2 lg:order-first space-y-4">
-              <AnimatePresence>
-                {cart.map(item => (
-                  <CartItemCard key={item.id} item={item} />
-                ))}
-              </AnimatePresence>
             </div>
           </div>
         )}
