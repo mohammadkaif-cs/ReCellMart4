@@ -19,9 +19,13 @@ const OrderSuccessPage: React.FC = () => {
         <CheckCircle2 className="h-20 w-20 text-green-500 mb-6" />
         <h1 className="text-3xl font-bold text-foreground mb-3">Order Placed Successfully!</h1>
         <p className="text-muted-foreground mb-2">Thank you for your purchase.</p>
-        <p className="text-muted-foreground mb-6">
-          Your Order ID is: <span className="font-semibold text-primary">{orderId}</span>
-        </p>
+        
+        <div className="bg-secondary/50 border border-dashed border-primary/20 rounded-lg px-6 py-3 my-6">
+          <p className="text-muted-foreground">
+            Your Order ID is: <span className="font-bold text-primary tracking-wider">{orderId}</span>
+          </p>
+        </div>
+
         <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md mb-8 max-w-md">
           <p className="font-bold">Payment Information</p>
           <p>Please keep the exact cash amount ready for delivery. Our agent will not be able to provide change.</p>
