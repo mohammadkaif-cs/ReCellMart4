@@ -75,7 +75,9 @@ const BrowseProducts = () => {
 
       const brandMatch = brandFilter === 'all' || p.brand === brandFilter;
 
-      return categoryMatch && searchMatch && priceMatch && brandMatch;
+      const stockMatch = p.stock > 0;
+
+      return categoryMatch && searchMatch && priceMatch && brandMatch && stockMatch;
     });
   }, [allProducts, currentCategory, searchTerm, priceFilter, brandFilter]);
 
