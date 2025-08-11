@@ -66,7 +66,7 @@ const CartPage: React.FC = () => {
                     <span className="flex items-center"><IndianRupee className="h-4 w-4" />{subtotal.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between text-muted-foreground">
-                    <span>Shipping</span>
+                    <span>Delivery</span>
                     <span className="text-green-500 font-medium">FREE</span>
                   </div>
                   <div className="border-t border-primary/20 my-2"></div>

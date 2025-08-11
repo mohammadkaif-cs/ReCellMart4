@@ -35,11 +35,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
     try {
       await addToCart(product);
-      toast.success("Product added! Redirecting to cart...", {
+      toast.success("Product added to cart!", {
         id: toastId,
-        duration: 1500,
+        action: {
+          label: "View Cart",
+          onClick: () => navigate('/cart'),
+        },
       });
-      setTimeout(() => navigate('/cart'), 1000);
     } catch (error: any) {
       let action;
       if (error.message.includes('log in')) {
@@ -51,6 +53,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       }
       
       toast.error(error.message, { id: toastId, action });
+    } finally {
       setIsAddingToCart(false);
     }
   };
