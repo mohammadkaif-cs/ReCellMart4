@@ -71,7 +71,7 @@ const Index = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: easeInOut, delay: 0.5 }}
           >
-            <h2 className="text-3xl font-bold text-center text-foreground mb-2">Why ReCellMart?</h2>
+            <h2 className="text-3xl font-bold text-center text-foreground mb-2">Why Choose ReCellMart?</h2>
             <p className="text-center text-muted-foreground mb-12">Your satisfaction is our priority. Here's what we promise.</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="text-center p-6 bg-card border rounded-lg shadow-soft transition-all duration-300 hover:shadow-soft-lg hover:-translate-y-1">
