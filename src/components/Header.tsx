@@ -129,6 +129,10 @@ const Header = () => {
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile & Dashboard</span>
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/terms-and-conditions')} className="cursor-pointer">
+                    <ShieldCheck className="mr-2 h-4 w-4" />
+                    <span>Terms & Conditions</span>
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={logout} className="cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
@@ -201,6 +205,14 @@ const Header = () => {
                     >
                       <User className="h-4 w-4" />
                       Profile & Dashboard
+                    </Link>
+                    <Link
+                      to="/terms-and-conditions"
+                      className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <ShieldCheck className="h-4 w-4" />
+                      Terms & Conditions
                     </Link>
                     <button
                       onClick={() => {
