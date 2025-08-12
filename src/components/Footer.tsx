@@ -7,16 +7,21 @@ import { useAuth } from '@/context/AuthContext';
 const Footer = () => {
   const { currentUser } = useAuth();
 
-  const navLinks = currentUser ? [
+  const baseLinks = [
     { name: 'Home', href: '/' },
     { name: 'Mobiles', href: '/browse/mobiles' },
     { name: 'Laptops', href: '/browse/laptops' },
+    { name: 'Terms & Conditions', href: '/terms-and-conditions' },
+  ];
+
+  const authLinks = currentUser ? [
     { name: 'My Orders', href: '/my-orders' },
   ] : [
-    { name: 'Home', href: '/' },
     { name: 'Login', href: '/login' },
     { name: 'Sign Up', href: '/signup' },
   ];
+
+  const navLinks = [...baseLinks, ...authLinks];
 
   return (
     <motion.footer

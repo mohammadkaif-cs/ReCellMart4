@@ -25,6 +25,7 @@ import CheckoutPage from "./pages/CheckoutPage";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 import ManageTickets from "./pages/admin/ManageTickets";
 import ForgotPassword from "./pages/ForgotPassword";
+import TermsAndConditions from "./pages/TermsAndConditions";
 
 const AdminRoutes = () => (
   <AdminRoute>
@@ -41,6 +42,7 @@ function App() {
       <Route path="/forbidden" element={<Forbidden />} />
       <Route path="/browse/:category" element={<BrowseProducts />} />
       <Route path="/product/:id" element={<ProductDetail />} />
+      <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
 
       {/* Auth routes - for logged-out users only */}
       <Route
