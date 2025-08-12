@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Loader2, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import GoogleIcon from './GoogleIcon';
 import TermsDialog from './TermsDialog';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface AuthFormProps {
   isLogin: boolean;
@@ -24,6 +25,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, onToggle }) => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isTermsDialogOpen, setIsTermsDialogOpen] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const title = isLogin ? 'Welcome Back' : 'Create Account';
   const description = isLogin ? 'Sign in to access your account.' : 'Get started with ReCellMart.';
@@ -33,6 +35,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, onToggle }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isLogin && !termsAccepted) {
+      toast.error("You must accept the Terms & Conditions to create an account.");
+      return;
+    }
     if (!isLogin && password.length < 6) {
       toast.error("Password must be at least 6 characters long.");
       return;
@@ -102,6 +108,28 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, onToggle }) => {
               </div>
               {!isLogin && (<p className="text-xs text-gray-500 mt-1 flex items-center"><ShieldCheck className="w-3 h-3 mr-1" />Password must be at least 6 characters</p>)}
             </div>
+
+            {!isLogin && (
+              <div className="flex items-start space-x-2.5">
+                <Checkbox
+                  id="terms"
+                  checked={termsAccepted}
+                  onCheckedChange={(checked) => setTermsAccepted(checked as boolean)}
+                  className="mt-0.5"
+                />
+                <div className="grid gap-1.5 leading-none">
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-normal text-gray-600"
+                  >
+                    I agree to the{' '}
+                    <Link to="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-600 hover:underline">
+                      Terms & Conditions
+                    </Link>
+                  </label>
+                </div>
+              </div>
+            )}
 
             <Button type="submit" className="w-full py-3.5 bg-[#3b82f6] hover:bg-blue-700 text-white font-bold rounded-lg" disabled={loading || googleLoading}>
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : buttonText}
