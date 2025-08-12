@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -10,6 +10,8 @@ interface TermsDialogProps {
 }
 
 const TermsDialog: React.FC<TermsDialogProps> = ({ open, onOpenChange, onAccept }) => {
+  const [isScrolledToEnd, setIsScrolledToEnd] = useState(false);
+
   const termsData = [
     {
       title: '1. Return, Refund, and Exchange Policy',
@@ -148,6 +150,20 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onOpenChange, onAccept 
     },
   ];
 
+  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
+    // Check if user has scrolled to the bottom (with a small tolerance)
+    if (scrollHeight - scrollTop <= clientHeight + 10) {
+      setIsScrolledToEnd(true);
+    }
+  };
+
+  useEffect(() => {
+    if (open) {
+      setIsScrolledToEnd(false);
+    }
+  }, [open]);
+
   const handleAccept = () => {
     onAccept();
     onOpenChange(false);
@@ -162,7 +178,7 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onOpenChange, onAccept 
             Please review and accept our terms to continue. Last Updated: 12 August 2025
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-grow pr-6 -mr-6 my-4">
+        <ScrollArea className="flex-grow pr-6 -mr-6 my-4" onScroll={handleScroll}>
           <div className="space-y-6">
             {termsData.map((section, index) => (
               <div key={index}>
@@ -194,7 +210,7 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onOpenChange, onAccept 
         </ScrollArea>
         <DialogFooter className="pt-4 border-t">
           <Button variant="outline" onClick={() => onOpenChange(false)}>Decline</Button>
-          <Button onClick={handleAccept}>Accept & Continue</Button>
+          <Button onClick={handleAccept} disabled={!isScrolledToEnd}>Accept & Continue</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
