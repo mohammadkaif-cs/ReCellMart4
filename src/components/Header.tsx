@@ -87,12 +87,6 @@ const Header = () => {
               </Link>
             </Button>
           ))}
-          {deferredPrompt && !isAppInstalled && (
-            <Button onClick={installPWA} variant="ghost" className="text-muted-foreground hover:text-primary/80 hover:bg-secondary">
-              <Download className="mr-2 h-4 w-4" />
-              Install App
-            </Button>
-          )}
           {currentUser && (
             <div className="flex items-center ml-4 space-x-2">
               <Button asChild variant="ghost" size="icon" className="relative">
