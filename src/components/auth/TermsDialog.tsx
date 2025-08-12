@@ -152,26 +152,31 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onOpenChange, onAccept 
   ];
 
   useEffect(() => {
-    if (!open) return;
-
-    setIsScrolledToEnd(false);
+    if (!open) {
+      setIsScrolledToEnd(false);
+      return;
+    }
 
     const scrollViewport = scrollAreaRef.current?.querySelector('div[data-radix-scroll-area-viewport]');
     if (!scrollViewport) return;
 
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = scrollViewport;
-      if (scrollHeight - scrollTop <= clientHeight + 5) {
+      if (scrollHeight - scrollTop <= clientHeight + 10) {
+        setIsScrolledToEnd(true);
+      }
+    };
+
+    const checkInitialScroll = () => {
+      if (scrollViewport.scrollHeight <= scrollViewport.clientHeight) {
         setIsScrolledToEnd(true);
       }
     };
 
     const timeoutId = setTimeout(() => {
-      if (scrollViewport.scrollHeight <= scrollViewport.clientHeight) {
-        setIsScrolledToEnd(true);
-      }
+      checkInitialScroll();
       scrollViewport.addEventListener('scroll', handleScroll);
-    }, 100);
+    }, 150);
 
     return () => {
       clearTimeout(timeoutId);
@@ -186,16 +191,16 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onOpenChange, onAccept 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-3xl h-[90vh] flex flex-col">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-3xl h-[90vh] flex flex-col p-0">
+        <DialogHeader className="p-6 pb-4 flex-shrink-0">
           <DialogTitle className="text-2xl">Terms & Conditions</DialogTitle>
           <DialogDescription>
             Please review and accept our terms to continue. Last Updated: 12 August 2025
           </DialogDescription>
         </DialogHeader>
         
-        <div className="flex-grow my-4 relative min-h-0">
-          <ScrollArea ref={scrollAreaRef} className="absolute inset-0 pr-4">
+        <div className="flex-grow px-6 min-h-0">
+          <ScrollArea ref={scrollAreaRef} className="h-full pr-4">
             <div className="space-y-6">
               {termsData.map((section, index) => (
                 <div key={index}>
@@ -227,7 +232,7 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onOpenChange, onAccept 
           </ScrollArea>
         </div>
 
-        <DialogFooter className="pt-4 border-t flex-shrink-0">
+        <DialogFooter className="p-6 pt-4 border-t flex-shrink-0">
           <Button variant="outline" onClick={() => onOpenChange(false)}>Decline</Button>
           <Button onClick={handleAccept} disabled={!isScrolledToEnd}>Accept & Continue</Button>
         </DialogFooter>
