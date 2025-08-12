@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -11,6 +11,7 @@ interface TermsDialogProps {
 
 const TermsDialog: React.FC<TermsDialogProps> = ({ open, onOpenChange, onAccept }) => {
   const [isScrolledToEnd, setIsScrolledToEnd] = useState(false);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   const termsData = [
     {
@@ -150,17 +151,32 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onOpenChange, onAccept 
     },
   ];
 
-  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
-    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-    if (scrollHeight - scrollTop <= clientHeight + 10) {
-      setIsScrolledToEnd(true);
-    }
-  };
-
   useEffect(() => {
-    if (open) {
-      setIsScrolledToEnd(false);
-    }
+    if (!open) return;
+
+    setIsScrolledToEnd(false);
+
+    const scrollViewport = scrollAreaRef.current?.querySelector('div[data-radix-scroll-area-viewport]');
+    if (!scrollViewport) return;
+
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = scrollViewport;
+      if (scrollHeight - scrollTop <= clientHeight + 5) {
+        setIsScrolledToEnd(true);
+      }
+    };
+
+    const timeoutId = setTimeout(() => {
+      if (scrollViewport.scrollHeight <= scrollViewport.clientHeight) {
+        setIsScrolledToEnd(true);
+      }
+      scrollViewport.addEventListener('scroll', handleScroll);
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      scrollViewport.removeEventListener('scroll', handleScroll);
+    };
   }, [open]);
 
   const handleAccept = () => {
@@ -177,37 +193,41 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onOpenChange, onAccept 
             Please review and accept our terms to continue. Last Updated: 12 August 2025
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-grow pr-6 -mr-6 my-4" onScroll={handleScroll}>
-          <div className="space-y-6">
-            {termsData.map((section, index) => (
-              <div key={index}>
-                <h3 className="text-lg font-semibold text-foreground mb-2">{section.title}</h3>
-                {section.intro && <p className="text-sm text-muted-foreground mb-3">{section.intro}</p>}
-                {section.subsections ? (
-                  <div className="space-y-4">
-                    {section.subsections.map((sub, subIndex) => (
-                      <div key={subIndex}>
-                        <h4 className="font-medium text-foreground/90">{sub.title}</h4>
-                        <ul className="list-disc list-outside pl-5 space-y-1 text-sm text-muted-foreground">
-                          {sub.points.map((point, pointIndex) => (
-                            <li key={pointIndex}>{point}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <ul className="list-disc list-outside pl-5 space-y-1 text-sm text-muted-foreground">
-                    {section.points?.map((point, pointIndex) => (
-                      <li key={pointIndex}>{point}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </div>
-        </ScrollArea>
-        <DialogFooter className="pt-4 border-t">
+        
+        <div className="flex-grow my-4 relative">
+          <ScrollArea ref={scrollAreaRef} className="absolute inset-0 pr-4">
+            <div className="space-y-6">
+              {termsData.map((section, index) => (
+                <div key={index}>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">{section.title}</h3>
+                  {section.intro && <p className="text-sm text-muted-foreground mb-3">{section.intro}</p>}
+                  {section.subsections ? (
+                    <div className="space-y-4">
+                      {section.subsections.map((sub, subIndex) => (
+                        <div key={subIndex}>
+                          <h4 className="font-medium text-foreground/90">{sub.title}</h4>
+                          <ul className="list-disc list-outside pl-5 space-y-1 text-sm text-muted-foreground">
+                            {sub.points.map((point, pointIndex) => (
+                              <li key={pointIndex}>{point}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <ul className="list-disc list-outside pl-5 space-y-1 text-sm text-muted-foreground">
+                      {section.points?.map((point, pointIndex) => (
+                        <li key={pointIndex}>{point}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+        </div>
+
+        <DialogFooter className="pt-4 border-t flex-shrink-0">
           <Button variant="outline" onClick={() => onOpenChange(false)}>Decline</Button>
           <Button onClick={handleAccept} disabled={!isScrolledToEnd}>Accept & Continue</Button>
         </DialogFooter>
