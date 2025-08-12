@@ -17,17 +17,24 @@ import {
 import { cn } from '@/lib/utils';
 import { usePWAInstall } from '@/hooks/use-pwa-install';
 
+// Base navigation items visible to everyone
+const baseNavItems = [
+  { name: 'Home', href: '/', icon: <Home className="h-4 w-4" /> },
+  { name: 'Products', href: '/browse/mobiles', icon: <Package className="h-4 w-4" /> },
+];
+
+// Navigation items for logged-out users
 const publicNavItems = [
   { name: 'Login', href: '/login', icon: null },
   { name: 'Signup', href: '/signup', icon: null },
 ];
 
+// Additional navigation items for logged-in users
 const userNavItems = [
-  { name: 'Home', href: '/', icon: <Home className="h-4 w-4" /> },
-  { name: 'Products', href: '/browse/mobiles', icon: <Package className="h-4 w-4" /> },
   { name: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard className="h-4 w-4" /> },
 ];
 
+// Navigation item for admin users
 const adminNavItem = { name: 'Admin', href: '/admin', icon: <ShieldCheck className="h-4 w-4" /> };
 
 const Header = () => {
@@ -37,14 +44,15 @@ const Header = () => {
   const navigate = useNavigate();
   const { deferredPrompt, installPWA, isAppInstalled } = usePWAInstall();
 
-  let navItems = [];
+  // Dynamically build navigation items based on auth state
+  const navItems = [...baseNavItems];
   if (currentUser) {
-    navItems = [...userNavItems];
+    navItems.push(...userNavItems);
     if (userRole === 'admin') {
       navItems.push(adminNavItem);
     }
   } else {
-    navItems = [...publicNavItems];
+    navItems.push(...publicNavItems);
   }
 
   const userInitial = currentUser?.email?.charAt(0).toUpperCase() || '?';
