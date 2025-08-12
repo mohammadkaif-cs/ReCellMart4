@@ -152,7 +152,6 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onOpenChange, onAccept 
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-    // Check if user has scrolled to the bottom (with a small tolerance)
     if (scrollHeight - scrollTop <= clientHeight + 10) {
       setIsScrolledToEnd(true);
     }
