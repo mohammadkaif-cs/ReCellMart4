@@ -31,7 +31,7 @@ const publicNavItems = [
 
 // Additional navigation items for logged-in users
 const userNavItems = [
-  { name: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard className="h-4 w-4" /> },
+  { name: 'My Orders', href: '/my-orders', icon: <ShoppingCart className="h-4 w-4" /> },
 ];
 
 // Navigation item for admin users
@@ -127,7 +127,7 @@ const Header = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate('/dashboard?tab=profile')} className="cursor-pointer">
                     <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
+                    <span>Profile & Dashboard</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={logout} className="cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
@@ -200,7 +200,7 @@ const Header = () => {
                       onClick={() => setIsOpen(false)}
                     >
                       <User className="h-4 w-4" />
-                      Profile
+                      Profile & Dashboard
                     </Link>
                     <button
                       onClick={() => {

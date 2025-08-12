@@ -11,7 +11,7 @@ const Footer = () => {
     { name: 'Home', href: '/' },
     { name: 'Mobiles', href: '/browse/mobiles' },
     { name: 'Laptops', href: '/browse/laptops' },
-    { name: 'Dashboard', href: '/dashboard' },
+    { name: 'My Orders', href: '/my-orders' },
   ] : [
     { name: 'Home', href: '/' },
     { name: 'Login', href: '/login' },
