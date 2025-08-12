@@ -71,7 +71,6 @@ interface AuthContextType {
   cancelOrder: (order: Order) => Promise<void>;
   createSupportTicket: (data: { type: 'Order Issue' | 'Technical Problem' | 'Payment' | 'General Inquiry'; subject: string; description: string; orderId?: string }) => Promise<void>;
   sendPasswordReset: (email: string) => Promise<void>;
-  acceptTerms: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -111,13 +110,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (userDocSnap.exists()) {
         const profileData = userDocSnap.data() as UserProfile;
-        if (profileData.termsAccepted === undefined) {
-          profileData.termsAccepted = false;
-        }
         setUserProfile(profileData);
         setUserRole(profileData.role);
         setIsProfileComplete(profileData.profileCompleted === true);
       } else {
+        // This case should ideally not be hit for existing users, but as a fallback.
         const expectedRole = ADMIN_EMAILS.includes(user.email?.toLowerCase() || '') ? 'admin' : 'user';
         const newProfile: UserProfile = {
           email: user.email || '',
@@ -131,7 +128,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           profileCompleted: false,
           role: expectedRole,
           avatarUrl: user.photoURL || '',
-          termsAccepted: false,
+          termsAccepted: false, // Default to false for safety
         };
         await setDoc(userDocRef, newProfile);
         setUserProfile(newProfile);
@@ -233,7 +230,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         profileCompleted: false,
         role: role,
         avatarUrl: '',
-        termsAccepted: false,
+        termsAccepted: true, // Set to true on signup
       };
       await setDoc(doc(db, 'users', user.uid), profileData);
     } catch (error: any) {
@@ -271,7 +268,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           profileCompleted: false,
           role: role,
           avatarUrl: user.photoURL || '',
-          termsAccepted: false,
+          termsAccepted: true, // Set to true on signup
         };
         await setDoc(doc(db, 'users', user.uid), profileData);
         toast.success('Welcome! Your account has been created.');
@@ -421,20 +418,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const acceptTerms = async () => {
-    if (!currentUser) throw new Error("User not logged in");
-    const userDocRef = doc(db, 'users', currentUser.uid);
-    await updateDoc(userDocRef, { termsAccepted: true });
-    await refreshUserProfile();
-    toast.success("Terms accepted! Welcome to ReCellMart.");
-    navigate('/');
-  };
-
   const value = {
     currentUser, userRole, userProfile, isProfileComplete, loading, loadingProfile,
     cart, cartLoading, orders, ordersLoading, supportTickets, supportTicketsLoading,
     signup, login, signInWithGoogle, logout, refreshUserProfile, addToCart, removeFromCart, placeOrder, cancelOrder, createSupportTicket,
-    sendPasswordReset, acceptTerms,
+    sendPasswordReset,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

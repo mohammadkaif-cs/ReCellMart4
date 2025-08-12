@@ -7,7 +7,7 @@ interface AdminRouteProps {
 }
 
 const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
-  const { currentUser, userRole, loading, userProfile } = useAuth();
+  const { currentUser, userRole, loading } = useAuth();
 
   if (loading) {
     return (
@@ -19,10 +19,6 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
 
   if (!currentUser) {
     return <Navigate to="/login" replace />;
-  }
-
-  if (userProfile && userProfile.termsAccepted === false) {
-    return <Navigate to="/accept-terms" replace />;
   }
 
   if (userRole !== 'admin') {
