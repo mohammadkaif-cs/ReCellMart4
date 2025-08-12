@@ -186,7 +186,7 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onOpenChange, onAccept 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col">
+      <DialogContent className="sm:max-w-3xl h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-2xl">Terms & Conditions</DialogTitle>
           <DialogDescription>
@@ -194,7 +194,7 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onOpenChange, onAccept 
           </DialogDescription>
         </DialogHeader>
         
-        <div className="flex-grow my-4 relative">
+        <div className="flex-grow my-4 relative min-h-0">
           <ScrollArea ref={scrollAreaRef} className="absolute inset-0 pr-4">
             <div className="space-y-6">
               {termsData.map((section, index) => (
