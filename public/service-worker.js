@@ -1,42 +1,19 @@
-const CACHE_NAME = 'recellmart-cache-v2'; // Version bumped to invalidate old cache
+const CACHE_NAME = 'recellmart-cache-v3'; // Version bumped to invalidate old cache
 const urlsToCache = [
   '/',
   '/index.html',
   '/manifest.json',
   '/recellmart_logo.png',
-  // Add other root assets from the public folder if needed
 ];
 
 self.addEventListener('install', (event) => {
+  // Force the waiting service worker to become the active service worker.
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Opened cache');
-        return cache.addAll(urlsToCache).catch(err => {
-          console.error('Failed to cache initial assets:', err);
-        });
-      })
-  );
-});
-
-self.addEventListener('fetch', (event) => {
-  // Use a Network falling back to cache strategy
-  event.respondWith(
-    fetch(event.request)
-      .then(networkResponse => {
-        // If the fetch is successful, clone it and cache it for future offline use
-        if (networkResponse && networkResponse.status === 200) {
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME)
-            .then(cache => {
-              cache.put(event.request, responseToCache);
-            });
-        }
-        return networkResponse;
-      })
-      .catch(() => {
-        // If the network request fails (e.g., offline), serve from the cache
-        return caches.match(event.request);
+        return cache.addAll(urlsToCache);
       })
   );
 });
@@ -53,6 +30,42 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim()) // Take control of all clients immediately.
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  // For navigation requests, use a network-first strategy.
+  // This ensures users always get the latest HTML.
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .catch(() => {
+          // If the network fails, serve the cached index.html as a fallback.
+          return caches.match('/index.html');
+        })
+    );
+    return;
+  }
+
+  // For non-navigation requests (assets), use a cache-first strategy (Stale-While-Revalidate).
+  // This makes the app load faster by serving assets from the cache.
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        // If we have a cached response, return it.
+        // In the background, fetch a new version and update the cache.
+        const fetchPromise = fetch(event.request).then(networkResponse => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, responseToCache);
+            });
+          }
+          return networkResponse;
+        });
+        // Return cached response immediately, if available.
+        return response || fetchPromise;
+      })
   );
 });
