@@ -1,172 +1,202 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import Layout from '@/components/Layout';
 import { motion } from 'framer-motion';
-import { ShieldCheck, FileText } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { ShieldCheck } from 'lucide-react';
 
 const TermsAndConditions = () => {
-  const sections = [
+  const termsData = [
     {
-      id: 'introduction',
-      title: '1. Introduction',
-      content: [
-        "Welcome to ReCellMart. These terms and conditions outline the rules and regulations for the use of ReCellMart's Website.",
-        "By accessing this website we assume you accept these terms and conditions. Do not continue to use ReCellMart if you do not agree to take all of the terms and conditions stated on this page.",
+      title: '1. Return, Refund, and Exchange Policy',
+      intro: 'At ReCellMart, we value your trust and aim to provide only verified, high-quality pre-owned smartphones. Every device we sell passes our strict 25-point verification before being listed for sale.',
+      subsections: [
+        {
+          title: '1.1 All Sales Are Final',
+          points: [
+            'No Returns - Once a device is sold and delivered, it cannot be returned.',
+            'No Refunds - We do not offer refunds, except in the rare case where the wrong product is delivered.',
+            'No Exchanges - Devices cannot be exchanged for another model after purchase.',
+          ],
+        },
+        {
+          title: '1.2 Why We Don\'t Offer Returns/Refunds/Exchanges',
+          points: [
+            'Every phone is fully tested for functionality and quality before shipping.',
+            'Detailed descriptions and real photos are provided before purchase.',
+            'This policy helps us keep prices affordable and ensure fair transactions.',
+          ],
+        },
+        {
+          title: '1.3 Quality Assurance',
+          points: [
+            'Each phone undergoes a 25-point device verification (screen, battery health, camera, connectivity, security locks, etc.).',
+            'Any cosmetic wear is mentioned in the listing and shown in photos.',
+          ],
+        },
+        {
+          title: '1.4 Exceptional Case',
+          points: [
+            'If the wrong product is delivered (different model, storage, or color), customers must:',
+            'Contact us within 24 hours of delivery.',
+            'Provide photos and proof of the incorrect item.',
+            'We will arrange a free replacement or refund in such cases.',
+          ],
+        },
+        {
+          title: '1.5 Customer Responsibility',
+          points: [
+            'Before placing an order, customers should:',
+            'Review the product description and images.',
+            'Verify that the model, storage, and color meet their needs.',
+          ],
+        },
       ],
     },
     {
-      id: 'open-box-delivery',
-      title: '2. Open Box Delivery',
-      content: [
-        'ReCellMart provides an "Open Box Delivery" service for all products.',
-        'This means you can inspect the physical condition of the product at the time of delivery.',
-        'The delivery agent will open the package in your presence. You are required to check for any physical damage, defects, or missing accessories.',
-        'Once you are satisfied with the physical condition of the product, you must accept the delivery.',
+      title: '2. Privacy Policy',
+      intro: 'We respect and protect your privacy.',
+      subsections: [
+        {
+          title: '2.1 Data We Collect',
+          points: [
+            'Name, delivery address, and contact number for order processing.',
+            'Optional: Email address for order updates.',
+          ],
+        },
+        {
+          title: '2.2 How We Use Your Data',
+          points: ['To process and deliver your orders.', 'To contact you if needed about your purchase.'],
+        },
+        {
+          title: '2.3 How We Protect Your Data',
+          points: [
+            'We do not sell or share your personal data with third parties, except delivery partners for fulfillment.',
+            'Your data is stored securely and accessed only by authorized staff.',
+          ],
+        },
+        {
+          title: '2.4 Cookies & Tracking',
+          points: ['We may use basic cookies to improve site performance and track visits.'],
+        },
       ],
     },
     {
-      id: 'return-policy',
-      title: '3. Return & Replacement Policy',
-      content: [
-        'No Returns After Acceptance: Once the product is accepted after the open box inspection, no returns will be accepted for physical damage, cosmetic issues, or missing accessories.',
-        '24-Hour Replacement for Major Faults: If a major functional fault (e.g., device not turning on, screen not working, major software issue) is discovered within 24 hours of delivery, you are eligible for a replacement.',
-        'To claim a replacement, you must contact our customer support within 24 hours with a detailed description of the issue and supporting evidence (photos/videos).',
-        'Our technical team will verify the fault. If the claim is genuine, a replacement will be initiated. The replacement will be of the same model and condition, subject to availability.',
+      title: '3. Shipping & Delivery Policy',
+      subsections: [
+        {
+          title: '3.1 Delivery Area',
+          points: [
+            'We currently serve Kalyan, Bhiwandi, and Thane.',
+            'Free 1-day delivery is available within our service area.',
+          ],
+        },
+        {
+          title: '3.2 Delivery Time',
+          points: [
+            'Orders placed before 3 PM: same-day or next-day delivery.',
+            'Orders placed after 3 PM: next-day delivery.',
+          ],
+        },
+        {
+          title: '3.3 Delivery Process',
+          points: [
+            'Our delivery agent will contact you before arrival.',
+            'Customers may inspect the phone on delivery - we provide a live demonstration to ensure it matches the listing.',
+          ],
+        },
+        {
+          title: '3.4 Failed Delivery',
+          points: [
+            'If you are unavailable, we will attempt redelivery once.',
+            'Repeated failed deliveries may lead to order cancellation.',
+          ],
+        },
       ],
     },
     {
-      id: 'warranty',
-      title: '4. Warranty',
-      content: [
-        'All products sold on ReCellMart come with a specific warranty period, which will be clearly mentioned on the product page.',
-        'The warranty covers functional defects but does not cover physical damage, water damage, or issues arising from unauthorized repairs or modifications.',
-        'To claim warranty, please contact our support team with your order details and a description of the issue.',
+      title: '4. Fraud Prevention & Order Verification',
+      points: [
+        'ReCellMart reserves the right to cancel or refuse any order that appears suspicious, fraudulent, or violates these Terms & Conditions.',
+        'For certain orders, especially high-value devices, we may require identity verification before dispatch (such as government ID, selfie with ID, OTP confirmation, or a small booking deposit for COD orders).',
+        'Any attempt to scam, threaten, or defraud ReCellMart will result in immediate order cancellation and may be reported to local law enforcement under applicable laws.',
       ],
     },
     {
-      id: 'user-responsibilities',
-      title: '5. User Responsibilities',
-      content: [
-        'You are responsible for providing accurate shipping and contact information.',
-        'You are responsible for being present at the delivery location to receive and inspect the product.',
-        'Any misuse, fraudulent activity, or violation of these terms may result in the termination of your account and future services.',
+      title: '5. Limitation of Liability',
+      intro: 'ReCellMart is not responsible for:',
+      points: [
+        'Any damage, defect, or malfunction that occurs after successful delivery and buyer acceptance.',
+        'Loss of personal data, SIM cards, or accessories not included in the purchase.',
+        'Indirect or consequential losses, including missed calls, lost contacts, or financial loss.',
+        'Our maximum liability is strictly limited to the price paid for the product.',
       ],
     },
     {
-      id: 'liability',
-      title: '6. Limitation of Liability',
-      content: [
-        'ReCellMart is a marketplace for second-hand electronics. While we take utmost care in verifying and testing our products, we are not liable for any indirect, incidental, or consequential damages arising from the use of the products.',
-        'Our liability is limited to the replacement or repair of the product as per our warranty and replacement policy.',
-      ],
-    },
-    {
-      id: 'governing-law',
-      title: '7. Governing Law',
-      content: [
-        'These terms and conditions are governed by and construed in accordance with the laws of India, and you irrevocably submit to the exclusive jurisdiction of the courts in that State or location.',
-      ],
-    },
-    {
-      id: 'changes-to-terms',
-      title: '8. Changes to Terms',
-      content: [
-        'ReCellMart reserves the right to revise these terms and conditions at any time. By using this Website, you are expected to review these terms on a regular basis.',
+      title: '6. Acceptance of Risk',
+      intro: 'By purchasing from ReCellMart, the buyer acknowledges and agrees that:',
+      points: [
+        'They are buying a verified pre-owned device, not a brand-new product.',
+        'The device has passed our 25-point verification process before sale.',
+        'Minor cosmetic signs of use are normal and do not affect functionality.',
+        'Once the buyer accepts the delivery, all responsibility for the device is transferred to the buyer.',
       ],
     },
   ];
 
-  const [activeSection, setActiveSection] = useState(sections[0].id);
-  const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: '-20% 0px -75% 0px' }
-    );
-
-    Object.values(sectionRefs.current).forEach((ref) => {
-      if (ref) observer.observe(ref);
-    });
-
-    return () => {
-      Object.values(sectionRefs.current).forEach((ref) => {
-        if (ref) observer.unobserve(ref);
-      });
-    };
-  }, []);
-
-  const scrollToSection = (id: string) => {
-    sectionRefs.current[id]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
   return (
     <Layout>
-      <div className="container mx-auto max-w-6xl py-12">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
-        >
-          <ShieldCheck className="mx-auto h-16 w-16 text-primary mb-4" />
-          <h1 className="text-4xl font-extrabold text-primary">Terms & Conditions</h1>
-          <p className="text-muted-foreground mt-2">Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-        </motion.div>
+      <div className="bg-background">
+        <div className="container mx-auto max-w-4xl py-16 px-4">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-12"
+          >
+            <ShieldCheck className="mx-auto h-12 w-12 text-primary mb-4" />
+            <h1 className="text-4xl font-extrabold text-foreground tracking-tight">ReCellMart - Terms & Conditions</h1>
+            <p className="text-muted-foreground mt-2">Last Updated: 12 August 2025</p>
+            <p className="mt-4 text-lg text-foreground/80 max-w-3xl mx-auto">
+              Welcome to ReCellMart. By using our website, mobile app, or placing an order, you agree to the following Terms & Conditions, which include our Return/Refund/Exchange Policy, Privacy Policy, Shipping & Delivery Policy, and Fraud Prevention Policy.
+            </p>
+          </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
-          <aside className="lg:col-span-1 lg:sticky lg:top-24 h-fit hidden lg:block">
-            <nav className="space-y-2">
-              {sections.map((section) => (
-                <button
-                  key={section.id}
-                  onClick={() => scrollToSection(section.id)}
-                  className={cn(
-                    'w-full text-left px-4 py-2 rounded-md transition-all duration-200 flex items-center',
-                    activeSection === section.id
-                      ? 'bg-primary/10 text-primary font-semibold'
-                      : 'text-muted-foreground hover:bg-secondary/50 hover:text-foreground'
-                  )}
-                >
-                  <span className="w-5 mr-3">{section.title.split('.')[0]}</span>
-                  <span>{section.title.split('.').slice(1).join('.').trim()}</span>
-                </button>
-              ))}
-            </nav>
-          </aside>
-
-          <main className="lg:col-span-3 space-y-8">
-            {sections.map((section, index) => (
-              <motion.div
-                key={section.id}
-                id={section.id}
-                ref={(el) => (sectionRefs.current[section.id] = el)}
+          <div className="space-y-10">
+            {termsData.map((section, index) => (
+              <motion.section
+                key={index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
+                transition={{ duration: 0.5, delay: 0.1 * index }}
+                className="bg-card p-8 rounded-xl border border-border shadow-sm"
               >
-                <div className="bg-card p-8 rounded-2xl border border-border shadow-soft">
-                  <h2 className="text-2xl font-semibold text-foreground mb-4 flex items-center">
-                    <FileText className="h-6 w-6 mr-3 text-primary/80" />
-                    {section.title}
-                  </h2>
-                  <div className="prose prose-lg max-w-none dark:prose-invert prose-p:text-muted-foreground prose-li:text-muted-foreground">
-                    <ul className="list-disc pl-5 space-y-2">
-                      {section.content.map((point, pIndex) => (
-                        <li key={pIndex}>{point}</li>
-                      ))}
-                    </ul>
+                <h2 className="text-2xl font-bold text-primary mb-4">{section.title}</h2>
+                {section.intro && <p className="text-muted-foreground mb-6">{section.intro}</p>}
+                
+                {section.subsections && (
+                  <div className="space-y-6">
+                    {section.subsections.map((sub, subIndex) => (
+                      <div key={subIndex}>
+                        <h3 className="text-lg font-semibold text-foreground mb-2">{sub.title}</h3>
+                        <ul className="list-disc list-outside pl-5 space-y-2 text-muted-foreground">
+                          {sub.points.map((point, pointIndex) => (
+                            <li key={pointIndex}>{point}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              </motion.div>
+                )}
+
+                {section.points && !section.subsections && (
+                   <ul className="list-disc list-outside pl-5 space-y-2 text-muted-foreground">
+                    {section.points.map((point, pointIndex) => (
+                      <li key={pointIndex}>{point}</li>
+                    ))}
+                  </ul>
+                )}
+              </motion.section>
             ))}
-          </main>
+          </div>
         </div>
       </div>
     </Layout>
