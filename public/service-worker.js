@@ -1,12 +1,10 @@
-const CACHE_NAME = 'recellmart-cache-v1';
+const CACHE_NAME = 'recellmart-cache-v2'; // Version bumped to invalidate old cache
 const urlsToCache = [
   '/',
   '/index.html',
-  '/src/main.tsx',
-  '/src/globals.css',
-  '/android-chrome-192x192.png',
-  '/android-chrome-512x512.png'
-  // Add other critical assets here
+  '/manifest.json',
+  '/recellmart_logo.png',
+  // Add other root assets from the public folder if needed
 ];
 
 self.addEventListener('install', (event) => {
@@ -14,19 +12,31 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Opened cache');
-        return cache.addAll(urlsToCache);
+        return cache.addAll(urlsToCache).catch(err => {
+          console.error('Failed to cache initial assets:', err);
+        });
       })
   );
 });
 
 self.addEventListener('fetch', (event) => {
+  // Use a Network falling back to cache strategy
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        if (response) {
-          return response;
+    fetch(event.request)
+      .then(networkResponse => {
+        // If the fetch is successful, clone it and cache it for future offline use
+        if (networkResponse && networkResponse.status === 200) {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME)
+            .then(cache => {
+              cache.put(event.request, responseToCache);
+            });
         }
-        return fetch(event.request);
+        return networkResponse;
+      })
+      .catch(() => {
+        // If the network request fails (e.g., offline), serve from the cache
+        return caches.match(event.request);
       })
   );
 });
@@ -38,6 +48,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheWhitelist.indexOf(cacheName) === -1) {
+            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
