@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -10,9 +10,6 @@ interface TermsDialogProps {
 }
 
 const TermsDialog: React.FC<TermsDialogProps> = ({ open, onOpenChange, onAccept }) => {
-  const [isScrolledToEnd, setIsScrolledToEnd] = useState(false);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
-
   const termsData = [
     {
       title: '1. Return, Refund, and Exchange Policy',
@@ -151,39 +148,6 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onOpenChange, onAccept 
     },
   ];
 
-  useEffect(() => {
-    if (!open) {
-      setIsScrolledToEnd(false);
-      return;
-    }
-
-    const scrollViewport = scrollAreaRef.current?.querySelector('div[data-radix-scroll-area-viewport]');
-    if (!scrollViewport) return;
-
-    const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = scrollViewport;
-      if (scrollHeight - scrollTop <= clientHeight + 10) {
-        setIsScrolledToEnd(true);
-      }
-    };
-
-    const checkInitialScroll = () => {
-      if (scrollViewport.scrollHeight <= scrollViewport.clientHeight) {
-        setIsScrolledToEnd(true);
-      }
-    };
-
-    const timeoutId = setTimeout(() => {
-      checkInitialScroll();
-      scrollViewport.addEventListener('scroll', handleScroll);
-    }, 150);
-
-    return () => {
-      clearTimeout(timeoutId);
-      scrollViewport.removeEventListener('scroll', handleScroll);
-    };
-  }, [open]);
-
   const handleAccept = () => {
     onAccept();
     onOpenChange(false);
@@ -200,31 +164,31 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onOpenChange, onAccept 
         </DialogHeader>
         
         <div className="flex-grow px-6 min-h-0">
-          <ScrollArea ref={scrollAreaRef} className="h-full pr-4">
+          <ScrollArea className="h-full pr-4">
             <div className="space-y-6">
               {termsData.map((section, index) => (
                 <div key={index}>
-                  <h3 className="text-lg font-semibold text-foreground mb-2">{section.title}</h3>
-                  {section.intro && <p className="text-sm text-muted-foreground mb-3">{section.intro}</p>}
+                  <h3 className="text-xl font-semibold text-foreground mb-3">{section.title}</h3>
+                  {section.intro && <p className="text-sm text-muted-foreground mb-4">{section.intro}</p>}
                   {section.subsections ? (
                     <div className="space-y-4">
                       {section.subsections.map((sub, subIndex) => (
                         <div key={subIndex}>
-                          <h4 className="font-medium text-foreground/90">{sub.title}</h4>
-                          <ul className="list-disc list-outside pl-5 space-y-1 text-sm text-muted-foreground">
+                          <h4 className="font-medium text-foreground/90 mb-2">{sub.title}</h4>
+                          <div className="space-y-2 text-sm text-muted-foreground pl-4 border-l-2 border-border">
                             {sub.points.map((point, pointIndex) => (
-                              <li key={pointIndex}>{point}</li>
+                              <p key={pointIndex}>{point}</p>
                             ))}
-                          </ul>
+                          </div>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <ul className="list-disc list-outside pl-5 space-y-1 text-sm text-muted-foreground">
+                    <div className="space-y-2 text-sm text-muted-foreground">
                       {section.points?.map((point, pointIndex) => (
-                        <li key={pointIndex}>{point}</li>
+                        <p key={pointIndex}>{point}</p>
                       ))}
-                    </ul>
+                    </div>
                   )}
                 </div>
               ))}
@@ -234,7 +198,7 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onOpenChange, onAccept 
 
         <DialogFooter className="p-6 pt-4 border-t flex-shrink-0">
           <Button variant="outline" onClick={() => onOpenChange(false)}>Decline</Button>
-          <Button onClick={handleAccept} disabled={!isScrolledToEnd}>Accept & Continue</Button>
+          <Button onClick={handleAccept}>Accept & Continue</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
