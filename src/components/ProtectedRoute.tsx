@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { currentUser, loading, loadingProfile } = useAuth();
+  const { currentUser, loading, loadingProfile, userProfile } = useAuth();
 
   if (loading || loadingProfile) {
     return (
@@ -23,6 +23,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   if (!currentUser) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (userProfile && userProfile.termsAccepted === false) {
+    return <Navigate to="/accept-terms" replace />;
   }
 
   return <>{children}</>;

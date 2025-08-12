@@ -26,6 +26,7 @@ import OrderSuccessPage from "./pages/OrderSuccessPage";
 import ManageTickets from "./pages/admin/ManageTickets";
 import ForgotPassword from "./pages/ForgotPassword";
 import TermsAndConditions from "./pages/TermsAndConditions";
+import AcceptTerms from "./pages/AcceptTerms";
 
 const AdminRoutes = () => (
   <AdminRoute>
@@ -71,6 +72,7 @@ function App() {
       />
       
       {/* Protected Routes - for logged-in users only */}
+      <Route path="/accept-terms" element={<AcceptTerms />} />
       <Route
         path="/my-orders"
         element={

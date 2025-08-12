@@ -30,6 +30,7 @@ export interface UserProfile {
   profileCompleted: boolean;
   role: 'user' | 'admin' | 'moderator';
   avatarUrl?: string;
+  termsAccepted?: boolean;
 }
 
 export const dashboardData = {
@@ -94,6 +95,7 @@ export const dashboardData = {
     profileCompleted: false,
     role: 'admin',
     avatarUrl: '',
+    termsAccepted: false,
   } as UserProfile,
 };
 

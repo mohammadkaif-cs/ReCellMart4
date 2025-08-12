@@ -9,6 +9,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   sendPasswordResetEmail,
+  updateDoc,
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, collection, onSnapshot, deleteDoc, addDoc, serverTimestamp, writeBatch, Timestamp, runTransaction, query, where, orderBy } from 'firebase/firestore';
 import { toast } from 'sonner';
@@ -71,6 +72,7 @@ interface AuthContextType {
   cancelOrder: (order: Order) => Promise<void>;
   createSupportTicket: (data: { type: 'Order Issue' | 'Technical Problem' | 'Payment' | 'General Inquiry'; subject: string; description: string; orderId?: string }) => Promise<void>;
   sendPasswordReset: (email: string) => Promise<void>;
+  acceptTerms: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -110,6 +112,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (userDocSnap.exists()) {
         const profileData = userDocSnap.data() as UserProfile;
+        if (profileData.termsAccepted === undefined) {
+          profileData.termsAccepted = false;
+        }
         setUserProfile(profileData);
         setUserRole(profileData.role);
         setIsProfileComplete(profileData.profileCompleted === true);
@@ -127,6 +132,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           profileCompleted: false,
           role: expectedRole,
           avatarUrl: user.photoURL || '',
+          termsAccepted: false,
         };
         await setDoc(userDocRef, newProfile);
         setUserProfile(newProfile);
@@ -228,6 +234,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         profileCompleted: false,
         role: role,
         avatarUrl: '',
+        termsAccepted: false,
       };
       await setDoc(doc(db, 'users', user.uid), profileData);
     } catch (error: any) {
@@ -265,6 +272,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           profileCompleted: false,
           role: role,
           avatarUrl: user.photoURL || '',
+          termsAccepted: false,
         };
         await setDoc(doc(db, 'users', user.uid), profileData);
         toast.success('Welcome! Your account has been created.');
@@ -414,11 +422,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const acceptTerms = async () => {
+    if (!currentUser) throw new Error("User not logged in");
+    const userDocRef = doc(db, 'users', currentUser.uid);
+    await updateDoc(userDocRef, { termsAccepted: true });
+    await refreshUserProfile();
+    toast.success("Terms accepted! Welcome to ReCellMart.");
+    navigate('/');
+  };
+
   const value = {
     currentUser, userRole, userProfile, isProfileComplete, loading, loadingProfile,
     cart, cartLoading, orders, ordersLoading, supportTickets, supportTicketsLoading,
     signup, login, signInWithGoogle, logout, refreshUserProfile, addToCart, removeFromCart, placeOrder, cancelOrder, createSupportTicket,
-    sendPasswordReset,
+    sendPasswordReset, acceptTerms,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
