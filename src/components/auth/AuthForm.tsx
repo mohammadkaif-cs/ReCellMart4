@@ -5,7 +5,6 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Loader2, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import GoogleIcon from './GoogleIcon';
 import TermsDialog from './TermsDialog';
@@ -24,9 +23,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, onToggle }) => {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [emailTermsAccepted, setEmailTermsAccepted] = useState(false);
   const [isTermsDialogOpen, setIsTermsDialogOpen] = useState(false);
-  const [dialogAction, setDialogAction] = useState<() => void>(() => () => {});
 
   const title = isLogin ? 'Welcome Back' : 'Create Account';
   const description = isLogin ? 'Sign in to access your account.' : 'Get started with ReCellMart.';
@@ -36,10 +33,6 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, onToggle }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isLogin && !emailTermsAccepted) {
-      toast.error("You must accept the Terms & Conditions to create an account.");
-      return;
-    }
     if (!isLogin && password.length < 6) {
       toast.error("Password must be at least 6 characters long.");
       return;
@@ -76,16 +69,6 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, onToggle }) => {
     }
   };
 
-  const openTermsForGoogle = () => {
-    setDialogAction(() => handleGoogleSignIn);
-    setIsTermsDialogOpen(true);
-  };
-
-  const openTermsForView = () => {
-    setDialogAction(() => () => setEmailTermsAccepted(true));
-    setIsTermsDialogOpen(true);
-  };
-
   return (
     <>
       <div className="w-full flex items-center justify-center p-6">
@@ -120,21 +103,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, onToggle }) => {
               {!isLogin && (<p className="text-xs text-gray-500 mt-1 flex items-center"><ShieldCheck className="w-3 h-3 mr-1" />Password must be at least 6 characters</p>)}
             </div>
 
-            {!isLogin && (
-              <div className="flex items-start space-x-2 pt-2">
-                <Checkbox id="terms" checked={emailTermsAccepted} onCheckedChange={(checked) => setEmailTermsAccepted(checked as boolean)} />
-                <div className="grid gap-1.5 leading-none">
-                  <label htmlFor="terms" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                    I agree to the{' '}
-                    <button type="button" onClick={openTermsForView} className="font-semibold underline text-primary hover:text-primary/80">
-                      Terms & Conditions
-                    </button>
-                  </label>
-                </div>
-              </div>
-            )}
-
-            <Button type="submit" className="w-full py-3.5 bg-[#3b82f6] hover:bg-blue-700 text-white font-bold rounded-lg" disabled={loading || googleLoading || (!isLogin && !emailTermsAccepted)}>
+            <Button type="submit" className="w-full py-3.5 bg-[#3b82f6] hover:bg-blue-700 text-white font-bold rounded-lg" disabled={loading || googleLoading}>
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : buttonText}
             </Button>
 
@@ -143,7 +112,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, onToggle }) => {
               <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-gray-500">Or continue with</span></div>
             </div>
 
-            <Button type="button" variant="outline" className="w-full py-3.5 border-gray-300 text-gray-700 font-semibold rounded-lg flex items-center justify-center" onClick={isLogin ? handleGoogleSignIn : openTermsForGoogle} disabled={loading || googleLoading}>
+            <Button type="button" variant="outline" className="w-full py-3.5 border-gray-300 text-gray-700 font-semibold rounded-lg flex items-center justify-center" onClick={() => setIsTermsDialogOpen(true)} disabled={loading || googleLoading}>
               {googleLoading ? (<Loader2 className="mr-2 h-4 w-4 animate-spin" />) : (<><GoogleIcon />Continue with Google</>)}
             </Button>
 
@@ -154,7 +123,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin, onToggle }) => {
           </form>
         </div>
       </div>
-      <TermsDialog open={isTermsDialogOpen} onOpenChange={setIsTermsDialogOpen} onAccept={dialogAction} />
+      <TermsDialog open={isTermsDialogOpen} onOpenChange={setIsTermsDialogOpen} onAccept={handleGoogleSignIn} />
     </>
   );
 };
