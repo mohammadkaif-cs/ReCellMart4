@@ -39,6 +39,8 @@ function App() {
       <Route path="/" element={<Index />} />
       <Route path="/not-available" element={<NotAvailable />} />
       <Route path="/forbidden" element={<Forbidden />} />
+      <Route path="/browse/:category" element={<BrowseProducts />} />
+      <Route path="/product/:id" element={<ProductDetail />} />
 
       {/* Auth routes - for logged-out users only */}
       <Route
@@ -67,22 +69,6 @@ function App() {
       />
       
       {/* Protected Routes - for logged-in users only */}
-      <Route
-        path="/browse/:category"
-        element={
-          <ProtectedRoute>
-            <BrowseProducts />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/product/:id"
-        element={
-          <ProtectedRoute>
-            <ProductDetail />
-          </ProtectedRoute>
-        }
-      />
       <Route
         path="/my-orders"
         element={
