@@ -37,27 +37,90 @@ const AdminRoutes = () => (
 function App() {
   return (
     <Routes>
-      {/* Routes for unauthenticated users */}
-      <Route path="/login" element={<AuthRoute><Auth /></AuthRoute>} />
-      <Route path="/signup" element={<AuthRoute><Auth /></AuthRoute>} />
-      <Route path="/forgot-password" element={<AuthRoute><ForgotPassword /></AuthRoute>} />
-
-      {/* Public utility routes */}
+      {/* Public routes accessible to everyone */}
+      <Route path="/" element={<Index />} />
       <Route path="/not-available" element={<NotAvailable />} />
       <Route path="/forbidden" element={<Forbidden />} />
+      <Route path="/browse/:category" element={<BrowseProducts />} />
+      <Route path="/product/:id" element={<ProductDetail />} />
+      <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+
+      {/* Auth routes - for logged-out users only */}
+      <Route
+        path="/login"
+        element={
+          <AuthRoute>
+            <Auth />
+          </AuthRoute>
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <AuthRoute>
+            <Auth />
+          </AuthRoute>
+        }
+      />
+      <Route
+        path="/forgot-password"
+        element={
+          <AuthRoute>
+            <ForgotPassword />
+          </AuthRoute>
+        }
+      />
       
-      {/* Protected Routes for all authenticated users */}
-      <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-      <Route path="/browse/:category" element={<ProtectedRoute><BrowseProducts /></ProtectedRoute>} />
-      <Route path="/product/:id" element={<ProtectedRoute><ProductDetail /></ProtectedRoute>} />
-      <Route path="/terms-and-conditions" element={<ProtectedRoute><TermsAndConditions /></ProtectedRoute>} />
-      <Route path="/my-orders" element={<ProtectedRoute><MyOrdersPage /></ProtectedRoute>} />
-      <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
-      <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
-      <Route path="/order-success/:orderId" element={<ProtectedRoute><OrderSuccessPage /></ProtectedRoute>} />
-      <Route path="/order/:orderId" element={<ProtectedRoute><OrderDetail /></ProtectedRoute>} />
-      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-      <Route path="/accept-terms" element={<ProtectedRoute><AcceptTerms /></ProtectedRoute>} />
+      {/* Protected Routes - for logged-in users only */}
+      <Route path="/accept-terms" element={<AcceptTerms />} />
+      <Route
+        path="/my-orders"
+        element={
+          <ProtectedRoute>
+            <MyOrdersPage />
+          </ProtectedRoute>
+        }
+      />
+       <Route
+        path="/cart"
+        element={
+          <ProtectedRoute>
+            <CartPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/checkout"
+        element={
+          <ProtectedRoute>
+            <CheckoutPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/order-success/:orderId"
+        element={
+          <ProtectedRoute>
+            <OrderSuccessPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/order/:orderId"
+        element={
+          <ProtectedRoute>
+            <OrderDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Admin Protected Routes */}
       <Route path="/admin" element={<AdminRoutes />}>
