@@ -9,9 +9,8 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   sendPasswordResetEmail,
-  updateDoc,
 } from 'firebase/auth';
-import { doc, setDoc, getDoc, collection, onSnapshot, deleteDoc, addDoc, serverTimestamp, writeBatch, Timestamp, runTransaction, query, where, orderBy } from 'firebase/firestore';
+import { doc, setDoc, getDoc, collection, onSnapshot, deleteDoc, addDoc, serverTimestamp, writeBatch, Timestamp, runTransaction, query, where, orderBy, updateDoc } from 'firebase/firestore';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { UserProfile } from '@/data/dashboard';
