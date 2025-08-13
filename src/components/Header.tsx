@@ -139,7 +139,7 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         <div className="flex items-center gap-2 md:hidden">
-          {currentUser && (
+          {currentUser ? (
             <Button asChild variant="ghost" size="icon" className="relative">
               <Link to="/cart">
                 <ShoppingCart className="h-5 w-5 text-primary" />
@@ -151,6 +151,15 @@ const Header = () => {
                 <span className="sr-only">Cart</span>
               </Link>
             </Button>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Button asChild variant="outline" size="sm">
+                <Link to="/login">Login</Link>
+              </Button>
+              <Button asChild size="sm">
+                <Link to="/signup">Signup</Link>
+              </Button>
+            </div>
           )}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
@@ -161,7 +170,7 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-card border-l">
               <nav className="flex flex-col gap-2 py-6">
-                {navItems.map((item) => (
+                {navItems.filter(item => !['Login', 'Signup'].includes(item.name)).map((item) => (
                   <Link
                     key={item.name}
                     to={item.href!}
