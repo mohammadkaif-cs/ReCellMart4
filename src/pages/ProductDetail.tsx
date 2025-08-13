@@ -99,16 +99,20 @@ const ProductDetail = () => {
         },
       });
     } catch (error: any) {
-      let action;
+      toast.dismiss(toastId);
       if (error.message.includes('log in')) {
-        action = { label: 'Login', onClick: () => navigate('/login') };
-      } else if (error.message.includes('profile')) {
+        navigate('/signup');
+        return;
+      }
+      
+      let action;
+      if (error.message.includes('profile')) {
         action = { label: 'Go to Profile', onClick: () => navigate('/dashboard?tab=profile') };
       } else if (error.message.includes('already in your cart')) {
         action = { label: 'View Cart', onClick: () => navigate('/cart') };
       }
       
-      toast.error(error.message, { id: toastId, action });
+      toast.error(error.message, { action });
     } finally {
       setIsAddingToCart(false);
     }
