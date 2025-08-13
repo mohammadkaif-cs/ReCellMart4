@@ -20,7 +20,7 @@ const cardVariants = {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const navigate = useNavigate();
-  const { addToCart, orders } = useAuth();
+  const { currentUser, addToCart, orders } = useAuth();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const imageUrl = product.media?.images?.[0];
 
@@ -39,6 +39,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
+
+    if (!currentUser) {
+      navigate('/signup');
+      return;
+    }
+
     setIsAddingToCart(true);
     const toastId = toast.loading("Adding to cart...");
 
@@ -53,10 +59,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       });
     } catch (error: any) {
       toast.dismiss(toastId);
-      if (error.message.includes('log in')) {
-        navigate('/signup');
-        return;
-      }
       
       let action;
       if (error.message.includes('profile')) {

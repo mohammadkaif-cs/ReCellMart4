@@ -37,7 +37,7 @@ const getYouTubeEmbedUrl = (url: string): string | null => {
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { addToCart, orders } = useAuth();
+  const { currentUser, addToCart, orders } = useAuth();
   
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -86,6 +86,11 @@ const ProductDetail = () => {
   const handleAddToCart = async () => {
     if (!product) return;
 
+    if (!currentUser) {
+      navigate('/signup');
+      return;
+    }
+
     setIsAddingToCart(true);
     const toastId = toast.loading("Adding to cart...");
 
@@ -100,10 +105,6 @@ const ProductDetail = () => {
       });
     } catch (error: any) {
       toast.dismiss(toastId);
-      if (error.message.includes('log in')) {
-        navigate('/signup');
-        return;
-      }
       
       let action;
       if (error.message.includes('profile')) {
