@@ -1,24 +1,51 @@
 {
   "short_name": "ReCellMart",
   "name": "ReCellMart: Verified Mobiles & Laptops",
-  "description": "Discover certified, high-quality second-hand mobiles and laptops. Every device is verified for your peace of mind.",
   "icons": [
     {
-      "src": "/recellmart_logo.png",
-      "type": "image/png",
+      "src": "https://res.cloudinary.com/dztqdfwcl/image/upload/w_72,h_72,c_fit/v1755286985/logo_v9coxu.jpg",
+      "sizes": "72x72",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "https://res.cloudinary.com/dztqdfwcl/image/upload/w_96,h_96,c_fit/v1755286985/logo_v9coxu.jpg",
+      "sizes": "96x96",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "https://res.cloudinary.com/dztqdfwcl/image/upload/w_128,h_128,c_fit/v1755286985/logo_v9coxu.jpg",
+      "sizes": "128x128",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "https://res.cloudinary.com/dztqdfwcl/image/upload/w_144,h_144,c_fit/v1755286985/logo_v9coxu.jpg",
+      "sizes": "144x144",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "https://res.cloudinary.com/dztqdfwcl/image/upload/w_152,h_152,c_fit/v1755286985/logo_v9coxu.jpg",
+      "sizes": "152x152",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "https://res.cloudinary.com/dztqdfwcl/image/upload/w_192,h_192,c_fit/v1755286985/logo_v9coxu.jpg",
       "sizes": "192x192",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     },
     {
-      "src": "/recellmart_logo.png",
-      "type": "image/png",
+      "src": "https://res.cloudinary.com/dztqdfwcl/image/upload/w_384,h_384,c_fit/v1755286985/logo_v9coxu.jpg",
+      "sizes": "384x384",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "https://res.cloudinary.com/dztqdfwcl/image/upload/w_512,h_512,c_fit/v1755286985/logo_v9coxu.jpg",
       "sizes": "512x512",
-      "purpose": "any maskable"
+      "type": "image/jpeg"
     }
   ],
   "start_url": "/",
-  "background_color": "#ffffff",
   "display": "standalone",
-  "scope": "/",
-  "theme_color": "#3b82f6"
+  "theme_color": "#3b82f6",
+  "background_color": "#ffffff"
 }
